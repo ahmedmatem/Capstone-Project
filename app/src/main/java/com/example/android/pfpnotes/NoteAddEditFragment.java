@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.example.android.pfpnotes.common.CameraHelper;
 import com.example.android.pfpnotes.data.DbContract;
 import com.example.android.pfpnotes.data.adapters.ImageAdapter;
+import com.example.android.pfpnotes.models.NoteModel;
 
 import java.util.ArrayList;
 
@@ -44,15 +45,13 @@ public class NoteAddEditFragment extends Fragment
 
     public static final int PLACE_LOADER_ID = 3;
 
-    public static final String ARG_DIMENSION = "dimension";
-    public static final String ARG_PLACE_SHORT_NAME = "place short name";
-    public static final String ARG_PATHS = "bitmaps";
+    public static final String ARG_NOTE = "note";
+
+    private NoteModel mNote;
 
     private static LoaderManager mLoaderManager;
 
     private OnFragmentInteractionListener mListener;
-
-    private ArrayList<String> mPaths;
 
     private SimpleCursorAdapter mPlaceAdapter;
     private ImageAdapter mImageAdapter;
@@ -60,24 +59,15 @@ public class NoteAddEditFragment extends Fragment
     private TextView tvDimension;
     private TextView mSelectedPlace;
 
-    private String mDimension;
-    private String mSelectedPlaceShortName;
-
     public NoteAddEditFragment() {
         // Required empty public constructor
     }
 
-    public static NoteAddEditFragment newInstance(LoaderManager loaderManager,
-                                                  String dimension,
-                                                  String placeShortName,
-                                                  ArrayList<String> paths) {
+    public static NoteAddEditFragment newInstance(LoaderManager loaderManager, NoteModel note) {
         mLoaderManager = loaderManager;
-
         NoteAddEditFragment fragment = new NoteAddEditFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_DIMENSION, dimension);
-        args.putString(ARG_PLACE_SHORT_NAME, placeShortName);
-        args.putStringArrayList(ARG_PATHS, paths);
+        args.putParcelable(ARG_NOTE, note);
         fragment.setArguments(args);
         return fragment;
     }
@@ -87,13 +77,9 @@ public class NoteAddEditFragment extends Fragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             Bundle args = getArguments();
-            mDimension = args.getString(ARG_DIMENSION);
-            mSelectedPlaceShortName = args.getString(ARG_PLACE_SHORT_NAME);
-            mPaths = args.getStringArrayList(ARG_PATHS);
+            mNote = (NoteModel) args.getParcelable(ARG_NOTE);
         }
-
-        mImageAdapter = new ImageAdapter(mPaths, getContext(), getLayoutInflater());
-
+        mImageAdapter = new ImageAdapter(mNote.getPhotoPaths(), getContext(), getLayoutInflater());
         mLoaderManager.initLoader(PLACE_LOADER_ID, null, this);
     }
 
@@ -117,8 +103,8 @@ public class NoteAddEditFragment extends Fragment
                             .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 140));
                     place.setBackground(getResources()
                             .getDrawable(R.drawable.bg_border));
-                    if(mSelectedPlaceShortName != null &&
-                            mSelectedPlaceShortName.equals(cursor.getString(columnIndex))){
+                    if (mNote.getShortPlaceName() != null &&
+                            mNote.getShortPlaceName().equals(cursor.getString(columnIndex))) {
                         mSelectedPlace = place;
                         place.setBackgroundColor(getResources()
                                 .getColor(R.color.colorAccent));
@@ -142,8 +128,7 @@ public class NoteAddEditFragment extends Fragment
                     mSelectedPlace = (TextView) view;
                     mSelectedPlace.setBackgroundColor(getResources()
                             .getColor(R.color.colorAccent));
-                    mSelectedPlaceShortName = mSelectedPlace.getText().toString();
-                    getArguments().putString(ARG_PLACE_SHORT_NAME, mSelectedPlaceShortName);
+                    mNote.setShortPlaceName(mSelectedPlace.getText().toString());
 
                     mListener.onUserInputChanged();
                 }
@@ -152,18 +137,14 @@ public class NoteAddEditFragment extends Fragment
         gv_places.setAdapter(mPlaceAdapter);
 
         tvDimension = (TextView) view.findViewById(R.id.tv_dimens_value);
-        if (mDimension != null) {
-            tvDimension.setText(mDimension);
+        if (mNote.getDimensionText() != null) {
+            tvDimension.setText(mNote.getDimensionText());
         }
 
         GridView gv_thumbs = (GridView) view.findViewById(R.id.gv_thumbnails);
         gv_thumbs.setAdapter(mImageAdapter);
 
         return view;
-    }
-
-    private void setSelectedPlace(String selectedPlaceShortName, GridView gridView) {
-
     }
 
     public void onDimensionClick(View view) {
@@ -181,23 +162,20 @@ public class NoteAddEditFragment extends Fragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == DIMENSION_REQUEST && resultCode == RESULT_OK) {
-            mDimension = data.getStringExtra(DIMENSION_STRING);
-            tvDimension.setText(mDimension);
-            tvDimension.setTextSize(24);
+            mNote.setDimensionText(data.getStringExtra(DIMENSION_STRING));
+            tvDimension.setText(mNote.getDimensionText());
 
             if (mListener != null) {
-                getArguments().putString(ARG_DIMENSION, mDimension);
                 mListener.onUserInputChanged();
             }
         }
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            if (mPaths == null) {
-                mPaths = new ArrayList<>();
+            if (mNote.getPhotoPaths() == null) {
+                mNote.setPhotoPaths(new ArrayList<String>());
             }
             String path = CameraHelper.getPhotoPath();
-            mPaths.add(path);
-            mImageAdapter.setPaths(mPaths);
-            getArguments().putStringArrayList(ARG_PATHS, mPaths);
+            mNote.getPhotoPaths().add(path);
+            mImageAdapter.setPaths(mNote.getPhotoPaths());
         }
     }
 
@@ -250,13 +228,11 @@ public class NoteAddEditFragment extends Fragment
      */
     public interface OnFragmentInteractionListener {
         void onDimensionClick(View view);
-
         void onCameraClick(View view);
-
         void onUserInputChanged();
     }
 
-    public ArrayList<String> getPaths() {
-        return mPaths;
+    public NoteModel getNote() {
+        return mNote;
     }
 }

@@ -6,12 +6,9 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
-import com.example.android.pfpnotes.data.DbContract;
 
 public class NoteListActivity extends AppCompatActivity
         implements NoteListFragment.OnFragmentInteractionListener {
@@ -26,7 +23,7 @@ public class NoteListActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         if(savedInstanceState == null) {
-            mNoteListFragment = NoteListFragment.newInstance(getSupportLoaderManager(), null);
+            mNoteListFragment = NoteListFragment.newInstance(getSupportLoaderManager());
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.note_list_fragment_container, mNoteListFragment)
                     .commit();
@@ -57,7 +54,7 @@ public class NoteListActivity extends AppCompatActivity
                 intent = new Intent(this, PriceListActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.action_settings:
+            case R.id.action_edit_note:
                 break;
             case R.id.action_places:
                 intent = new Intent(this, PlaceListActivity.class);

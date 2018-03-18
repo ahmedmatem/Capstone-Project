@@ -9,7 +9,7 @@ import com.example.android.pfpnotes.common.MathHelper;
  */
 
 public class Dimension {
-    private static final String DELIMITER_SIGN = "x";
+    public static final String DELIMITER_SIGN = "x";
     public static final int SQUARE_CM_TO_SQUARE_M = 10000;
     // 20x30x2x10
     // e.g. 20{width}x30{height}x2{layers|copies}[x10{copies}]

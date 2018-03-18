@@ -17,7 +17,7 @@
     </group>
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_edit_note"
         android:orderInCategory="500"
         android:title="@string/action_settings"
         app:showAsAction="never"/>

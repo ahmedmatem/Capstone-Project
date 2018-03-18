@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,14 +20,11 @@ import com.example.android.pfpnotes.data.daos.PlaceDAO;
 import com.example.android.pfpnotes.data.Preferences;
 import com.example.android.pfpnotes.data.daos.PriceDAO;
 import com.example.android.pfpnotes.models.Dimension;
+import com.example.android.pfpnotes.models.NoteModel;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import static com.example.android.pfpnotes.NoteAddEditFragment.ARG_DIMENSION;
-import static com.example.android.pfpnotes.NoteAddEditFragment.ARG_PATHS;
-import static com.example.android.pfpnotes.NoteAddEditFragment.ARG_PLACE_SHORT_NAME;
 
 public class NoteAddActivity extends AppCompatActivity
         implements NoteAddEditFragment.OnFragmentInteractionListener {
@@ -38,6 +34,7 @@ public class NoteAddActivity extends AppCompatActivity
     public static final int REQUEST_IMAGE_CAPTURE = 2;
 
     private Fragment mFragment;
+    private NoteModel mNote = new NoteModel();
 
     private MenuItem mAddMenuItem;
 
@@ -47,8 +44,7 @@ public class NoteAddActivity extends AppCompatActivity
         setContentView(R.layout.activity_note_add);
 
         if (savedInstanceState == null) {
-            mFragment = NoteAddEditFragment.newInstance(getSupportLoaderManager(),
-                    null, null, null);
+            mFragment = NoteAddEditFragment.newInstance(getSupportLoaderManager(), mNote);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, mFragment)
                     .commit();
@@ -57,7 +53,7 @@ public class NoteAddActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_add_note, menu);
+        getMenuInflater().inflate(R.menu.menu_note_add, menu);
         mAddMenuItem = menu.findItem(R.id.action_add_note);
         return true;
     }
@@ -82,13 +78,13 @@ public class NoteAddActivity extends AppCompatActivity
     }
 
     private Uri insertNoteEntry() {
+        if(mNote == null){
+            return null;
+        }
         Uri uri = null;
-
-        Bundle args = mFragment.getArguments();
-        String shortPlaceName = args.getString(ARG_PLACE_SHORT_NAME);
         PlaceDAO placeDAO = new PlaceDAO(getContentResolver());
-        String fullPlaceName = placeDAO.getFullPlaceNameBy(shortPlaceName);
-        Dimension dimension = new Dimension(args.getString(ARG_DIMENSION));
+        String fullPlaceName = placeDAO.getFullPlaceNameBy(mNote.getShortPlaceName());
+        Dimension dimension = new Dimension(mNote.getDimensionText());
 
         ContentValues cv = new ContentValues();
         cv.put(DbContract.NoteEntry.COLUMN_PLACE, fullPlaceName);
@@ -108,14 +104,12 @@ public class NoteAddActivity extends AppCompatActivity
     }
 
     private void insertNoteImages(Uri uri) {
-        if (uri != null) {
-            Bundle args = mFragment.getArguments();
-            ArrayList<String> paths = args.getStringArrayList(ARG_PATHS);
-            if (paths != null && paths.size() > 0) {
+        if (uri != null && mNote != null) {
+            if (mNote.getPhotoPaths() != null && mNote.getPhotoPaths().size() > 0) {
                 boolean isThumbnail = true;
                 int noteId = Integer.valueOf(uri.getLastPathSegment());
                 ContentResolver contentResolver = getContentResolver();
-                for (String path : paths) {
+                for (String path : mNote.getPhotoPaths()) {
                     ContentValues cv = new ContentValues();
                     cv.put(DbContract.ImageEntry.COLUMN_NOTE_ID, noteId);
                     cv.put(DbContract.ImageEntry.COLUMN_IMAGE_PATH, path);
@@ -124,7 +118,7 @@ public class NoteAddActivity extends AppCompatActivity
                     cv.put(DbContract.ImageEntry.COLUMN_THUMBNAIL, isThumbnail ? 1 : 0);
                     contentResolver.insert(DbContract.ImageEntry.CONTENT_URI, cv);
                     if(isThumbnail) {
-                        isThumbnail = !isThumbnail;
+                        isThumbnail = false;
                     }
                 }
             }
@@ -169,10 +163,7 @@ public class NoteAddActivity extends AppCompatActivity
     @Override
     public void onUserInputChanged() {
         boolean enable = false;
-        Bundle args = mFragment.getArguments();
-        String dimension = args.getString(ARG_DIMENSION);
-        String placeShortName = args.getString(ARG_PLACE_SHORT_NAME);
-        if (dimension != null && placeShortName != null) {
+        if (mNote.getDimensionText() != null && mNote.getShortPlaceName() != null) {
             enable = true;
         }
         mAddMenuItem.setEnabled(enable);

@@ -75,6 +75,13 @@ public class DbContract {
         // COLUMNS for note photo
         public static final String COLUMN_IMAGE_PATH = "image_path";
 
+        public static Uri buildUriWithId(String id){
+            return BASE_CONTENT_URI.buildUpon()
+                    .appendPath(PATH_NOTES)
+                    .appendPath(id)
+                    .build();
+        }
+
         static {
             sNoteProjectionMap = new HashMap<>();
             sNoteProjectionMap.put(_ID, FULL_ID);
@@ -104,6 +111,13 @@ public class DbContract {
         public static final String COLUMN_IMAGE_PATH = "image_path";
         public static final String COLUMN_THUMBNAIL = "thumbnail";
         public static final String FULL_IMAGE_PATH = TABLE_NAME + "." + COLUMN_IMAGE_PATH;
+
+        public static Uri buildUriWithId(String id){
+            return BASE_CONTENT_URI.buildUpon()
+                    .appendPath(PATH_IMAGES)
+                    .appendPath(id)
+                    .build();
+        }
 
 //        static {
 //            sImageProjectionMap = new HashMap<>();

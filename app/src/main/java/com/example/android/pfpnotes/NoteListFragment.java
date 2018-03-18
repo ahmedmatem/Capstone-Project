@@ -19,12 +19,13 @@ import android.widget.Toast;
 
 import com.example.android.pfpnotes.data.DbContract;
 import com.example.android.pfpnotes.data.adapters.NoteAdapter;
+import com.example.android.pfpnotes.data.daos.ImageDAO;
 import com.example.android.pfpnotes.data.daos.PlaceDAO;
 import com.example.android.pfpnotes.models.Item;
 import com.example.android.pfpnotes.models.NoteItem;
+import com.example.android.pfpnotes.models.NoteModel;
 
-import static com.example.android.pfpnotes.NoteAddEditFragment.ARG_DIMENSION;
-import static com.example.android.pfpnotes.NoteAddEditFragment.ARG_PLACE_SHORT_NAME;
+import java.util.ArrayList;
 
 
 /**
@@ -36,17 +37,14 @@ import static com.example.android.pfpnotes.NoteAddEditFragment.ARG_PLACE_SHORT_N
  * create an instance of this fragment.
  */
 public class NoteListFragment extends Fragment
-        implements LoaderManager.LoaderCallbacks<Cursor>,NoteAdapter.OnItemClickListener {
+        implements LoaderManager.LoaderCallbacks<Cursor>, NoteAdapter.OnItemClickListener {
     private static final String TAG = "NoteListFragment";
     private static final int NOTE_LOADER_ID = 5;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    public static final String ARG_NOTE = "note";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private NoteModel mNote;
 
     private OnFragmentInteractionListener mListener;
 
@@ -63,16 +61,14 @@ public class NoteListFragment extends Fragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param2 Parameter 2.
      * @return A new instance of fragment NoteListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NoteListFragment newInstance(LoaderManager loaderManager, String param2) {
+    public static NoteListFragment newInstance(LoaderManager loaderManager) {
         mLoaderManager = loaderManager;
         NoteListFragment fragment = new NoteListFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+//        Bundle args = new Bundle();
+//        fragment.setArguments(args);
         return fragment;
     }
 
@@ -80,8 +76,7 @@ public class NoteListFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+//            mParam1 = getArguments().getString(ARG_PARAM1);
         }
 
         mLoaderManager.initLoader(NOTE_LOADER_ID, null, this);
@@ -141,11 +136,21 @@ public class NoteListFragment extends Fragment
 
     @Override
     public void onItemClick(NoteItem item) {
-        Bundle bundle = new Bundle();
+        String fullPlaceName = item.getPlace();
         String shortPlaceName = new PlaceDAO(getContext().getContentResolver())
-                .getShortPlaceNameBy(item.getPlace());
-        bundle.putString(ARG_PLACE_SHORT_NAME, shortPlaceName);
-        bundle.putString(ARG_DIMENSION, item.getDimension());
+                .getShortPlaceNameBy(fullPlaceName);
+        ArrayList<String> photoPaths = new ImageDAO(getContext()
+                .getContentResolver()).getPaths(item.getId());
+
+        mNote = new NoteModel(item.getId(),
+                shortPlaceName,
+                fullPlaceName,
+                item.getDimension(),
+                photoPaths);
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARG_NOTE, mNote);
+
         Intent intent = new Intent(getContext(), NoteEditActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);

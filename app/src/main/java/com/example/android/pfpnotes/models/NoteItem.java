@@ -9,7 +9,6 @@ import com.example.android.pfpnotes.data.DbContract;
  */
 
 public class NoteItem extends Item {
-    private static final String DELIMITER_SIGN = " x ";
     private double mPrice;
     private int mId;
     private int mWidth;
@@ -71,12 +70,12 @@ public class NoteItem extends Item {
     }
 
     public String getDimension() {
-        StringBuilder dimens = new StringBuilder(mWidth + DELIMITER_SIGN + mHeight);
+        StringBuilder dimens = new StringBuilder(mWidth + Dimension.DELIMITER_SIGN + mHeight);
         if (mLayers > 1) {
-            dimens.append(DELIMITER_SIGN + mLayers);
+            dimens.append(Dimension.DELIMITER_SIGN + mLayers);
         }
         if (mCopies > 1) {
-            dimens.append(DELIMITER_SIGN + mCopies);
+            dimens.append(Dimension.DELIMITER_SIGN + mCopies);
         }
         return dimens.toString();
     }
