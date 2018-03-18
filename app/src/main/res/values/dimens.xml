@@ -1,0 +1,8 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="gvPlaceMarginTop">40dp</dimen>
+    <dimen name="gvPlacesGap">2dp</dimen>
+    <dimen name="add_note_tumbnail_height">200dp</dimen>
+    <dimen name="grid_view_item_spacing">2dp</dimen>
+</resources>

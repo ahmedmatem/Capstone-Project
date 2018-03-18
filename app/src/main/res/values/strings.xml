@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">PFP Notes</string>
+
+    <!--SignIn layout-->
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="sign_in_remember">Stay signed in.</string>
+    <string name="sign_in">Sign in</string>
+    <string name="notes">Notes</string>
+    <string name="action_settings">Settings</string>
+
+    <!--NoteAddActivity-->
+    <string name="place">Place</string>
+    <string name="dimension">Dimension (cm)</string>
+    <string name="dimens_hint">Click button to enter dimension</string>
+    <string name="image_description">Image description</string>
+    <string name="add_node">Add Note</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--menu actions-->
+    <string name="menu_action_price_list">Price list</string>
+    <string name="menu_action_place_list">Place list</string>
+
+    <!--PriceListActivity-->
+    <string name="price_list">Price List</string>
+    <string name="interval">Interval</string>
+    <string name="price">Price</string>
+
+    <!--PlaceListActivity-->
+    <string name="place_list">Place List</string>
+    <string name="place_full_name">Place name</string>
+    <string name="place_short_name">Short</string>
+
+    <string name="text_view">text view</string>
+
+    <string name="data_version">realtime_data_version</string>
+    <string name="version_key">version_key</string>
+
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="dimension_uppercase">DIMENSION</string>
+    <string name="images">Images</string>
+    <string name="add_note">Add note</string>
+
+    <string name="email_address">email</string>
+    <string name="title_activity_note_edit">Edit</string>
+</resources>
