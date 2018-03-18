@@ -12,7 +12,10 @@ import android.view.View;
 
 import com.example.android.inputlibrary.KeyboardFragment;
 
+import java.util.ArrayList;
+
 import static com.example.android.pfpnotes.NoteAddEditFragment.ARG_DIMENSION;
+import static com.example.android.pfpnotes.NoteAddEditFragment.ARG_PATHS;
 import static com.example.android.pfpnotes.NoteAddEditFragment.ARG_PLACE_SHORT_NAME;
 
 public class NoteEditActivity extends AppCompatActivity implements
@@ -30,9 +33,10 @@ public class NoteEditActivity extends AppCompatActivity implements
         Bundle bundle = getIntent().getExtras();
         String place = bundle.getString(ARG_PLACE_SHORT_NAME);
         String dimension = bundle.getString(ARG_DIMENSION);
+        ArrayList<String> paths = bundle.getStringArrayList(ARG_PATHS);
 
         mFragment = NoteAddEditFragment.newInstance(getSupportLoaderManager(),
-                dimension, place, null);
+                dimension, place, paths);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.edit_fragment_container, mFragment)
                 .commit();
