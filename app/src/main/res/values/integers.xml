@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="gvPlaceColumnNumber">7</integer>
+    <integer name="thumbnailWidth">200</integer>
+    <integer name="thumbnailHeight">200</integer>
 </resources>

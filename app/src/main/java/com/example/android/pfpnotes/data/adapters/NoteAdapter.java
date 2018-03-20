@@ -2,6 +2,7 @@ package com.example.android.pfpnotes.data.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,12 +12,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.example.android.pfpnotes.R;
+import com.example.android.pfpnotes.common.Performance;
 import com.example.android.pfpnotes.data.DateHelper;
 import com.example.android.pfpnotes.data.DbContract;
 import com.example.android.pfpnotes.models.HeaderItem;
 import com.example.android.pfpnotes.models.Item;
 import com.example.android.pfpnotes.models.NoteItem;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -30,7 +33,7 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<Item> mData;
     private OnItemClickListener mListener;
 
-    public interface OnItemClickListener{
+    public interface OnItemClickListener {
         void onItemClick(NoteItem item);
     }
 
@@ -55,7 +58,7 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         mCursor.getColumnIndex(DbContract.NoteEntry.COLUMN_DATE));
                 currentDate = DateHelper.getDate(currentDate); // dd/MM/yyyy
                 if (!currentDate.equals(date)) {
-                    if(headerPosition >= 0){
+                    if (headerPosition >= 0) {
                         ((HeaderItem) mData.get(headerPosition)).setTotalPrice(totalPerDay);
                     }
 
@@ -73,7 +76,7 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 totalPerDay += Double.valueOf(totalPerDayAsString);
             }
 
-            if(headerPosition >= 0) {
+            if (headerPosition >= 0) {
                 ((HeaderItem) mData.get(headerPosition)).setTotalPrice(totalPerDay);
             }
             return mData;
@@ -114,9 +117,14 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 itemViewHolder.mDimension.setText(noteItem.getDimension());
                 itemViewHolder.mPlace.setText(noteItem.getPlace());
                 itemViewHolder.mPrice.setText(String.format("£%.2f", noteItem.getPrice()));
-                if(noteItem.getPath() != null) {
+                if (noteItem.getPath() != null) {
                     itemViewHolder.mThumbnail.setVisibility(View.VISIBLE);
-                    itemViewHolder.mThumbnail.setImageURI(Uri.parse(noteItem.getPath()));
+                    Bitmap bmp = Performance
+                            .decodeSampledBitmapFromFile(
+                                    noteItem.getPath(),
+                                    mContext.getResources().getInteger(R.integer.thumbnailWidth),
+                                    mContext.getResources().getInteger(R.integer.thumbnailHeight));
+                    itemViewHolder.mThumbnail.setImageBitmap(bmp);
                 } else {
                     itemViewHolder.mThumbnail.setVisibility(View.GONE);
                 }

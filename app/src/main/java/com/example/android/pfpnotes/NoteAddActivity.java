@@ -13,12 +13,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.android.pfpnotes.asynctasks.NoteAddAsyncTask;
 import com.example.android.pfpnotes.common.CameraHelper;
 import com.example.android.pfpnotes.data.DateHelper;
 import com.example.android.pfpnotes.data.DbContract;
 import com.example.android.pfpnotes.data.daos.PlaceDAO;
 import com.example.android.pfpnotes.data.Preferences;
 import com.example.android.pfpnotes.data.daos.PriceDAO;
+import com.example.android.pfpnotes.interfaces.OnDatabaseListener;
 import com.example.android.pfpnotes.models.Dimension;
 import com.example.android.pfpnotes.models.NoteModel;
 
@@ -27,7 +29,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class NoteAddActivity extends AppCompatActivity
-        implements NoteAddEditFragment.OnFragmentInteractionListener {
+        implements NoteAddEditFragment.OnFragmentInteractionListener,
+        OnDatabaseListener{
     private static final String TAG = "NoteAddActivity";
 
     public static final int DIMENSION_REQUEST = 1;
@@ -61,68 +64,10 @@ public class NoteAddActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_add_note) {
-            addNote();
-            Intent intent = new Intent(this, NoteListActivity.class);
-            startActivity(intent);
+            new NoteAddAsyncTask(mNote, this).execute(this);
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void addNote() {
-        Uri uri = insertNoteEntry();
-        if(uri != null) {
-            insertNoteImages(uri);
-        }
-
-    }
-
-    private Uri insertNoteEntry() {
-        if(mNote == null){
-            return null;
-        }
-        Uri uri = null;
-        PlaceDAO placeDAO = new PlaceDAO(getContentResolver());
-        String fullPlaceName = placeDAO.getFullPlaceNameBy(mNote.getShortPlaceName());
-        Dimension dimension = new Dimension(mNote.getDimensionText());
-
-        ContentValues cv = new ContentValues();
-        cv.put(DbContract.NoteEntry.COLUMN_PLACE, fullPlaceName);
-        cv.put(DbContract.NoteEntry.COLUMN_EMAIL, new Preferences(this).readUserEmail());
-        cv.put(DbContract.NoteEntry.COLUMN_WIDTH, dimension.getWidth());
-        cv.put(DbContract.NoteEntry.COLUMN_HEIGHT, dimension.getHeight());
-        cv.put(DbContract.NoteEntry.COLUMN_LAYERS, dimension.getLayers());
-        cv.put(DbContract.NoteEntry.COLUMN_COPIES, dimension.getCopies());
-        cv.put(DbContract.NoteEntry.COLUMN_DATE, DateHelper.getCurrentDate());
-        double price = new PriceDAO(getContentResolver())
-                .getPriceBySquare(dimension.getSquare());
-        cv.put(DbContract.NoteEntry.COLUMN_PRICE,
-                price * dimension.getLayers() * dimension.getCopies());
-        cv.put(DbContract.NoteEntry.COLUMN_STATUS, DbContract.NoteEntry.NoteStatus.STATUS_UPLOAD);
-
-        return getContentResolver().insert(DbContract.NoteEntry.CONTENT_URI, cv);
-    }
-
-    private void insertNoteImages(Uri uri) {
-        if (uri != null && mNote != null) {
-            if (mNote.getPhotoPaths() != null && mNote.getPhotoPaths().size() > 0) {
-                boolean isThumbnail = true;
-                int noteId = Integer.valueOf(uri.getLastPathSegment());
-                ContentResolver contentResolver = getContentResolver();
-                for (String path : mNote.getPhotoPaths()) {
-                    ContentValues cv = new ContentValues();
-                    cv.put(DbContract.ImageEntry.COLUMN_NOTE_ID, noteId);
-                    cv.put(DbContract.ImageEntry.COLUMN_IMAGE_PATH, path);
-                    cv.put(DbContract.ImageEntry.COLUMN_EMAIL,
-                            new Preferences(this).readUserEmail());
-                    cv.put(DbContract.ImageEntry.COLUMN_THUMBNAIL, isThumbnail ? 1 : 0);
-                    contentResolver.insert(DbContract.ImageEntry.CONTENT_URI, cv);
-                    if(isThumbnail) {
-                        isThumbnail = false;
-                    }
-                }
-            }
-        }
     }
 
     @Override
@@ -167,5 +112,11 @@ public class NoteAddActivity extends AppCompatActivity
             enable = true;
         }
         mAddMenuItem.setEnabled(enable);
+    }
+
+    @Override
+    public void onDataSaved() {
+        Intent intent = new Intent(this, NoteListActivity.class);
+        startActivity(intent);
     }
 }

@@ -1,7 +1,11 @@
 package com.example.android.pfpnotes.common;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.view.View;
+import android.widget.ImageView;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,8 +1,11 @@
 package com.example.android.pfpnotes.data.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +13,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.example.android.pfpnotes.R;
+import com.example.android.pfpnotes.common.CameraHelper;
+import com.example.android.pfpnotes.common.Performance;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,7 +55,7 @@ public class ImageAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
-        if(convertView == null){
+        if (convertView == null) {
             convertView = mLayoutInflater.inflate(R.layout.thumbnail_item, parent, false);
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
@@ -58,11 +64,10 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         String path = mPaths.get(position);
-        File imageFile = new File(path);
-        Uri contentUri = FileProvider.getUriForFile(mContext,
-                "com.example.android.fileprovider", imageFile);
-
-        viewHolder.mThumbnail.setImageURI(contentUri);
+        Bitmap bmp = Performance.decodeSampledBitmapFromFile(
+                path, mContext.getResources().getInteger(R.integer.thumbnailWidth),
+                mContext.getResources().getInteger(R.integer.thumbnailHeight));
+        viewHolder.mThumbnail.setImageBitmap(bmp);
 
         return convertView;
     }
@@ -72,7 +77,7 @@ public class ImageAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    private class ViewHolder{
+    private class ViewHolder {
         public ImageView mThumbnail;
 
         public ViewHolder(View view) {
