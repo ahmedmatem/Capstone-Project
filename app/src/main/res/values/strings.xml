@@ -48,4 +48,8 @@
 
     <string name="email_address">email</string>
     <string name="title_activity_note_edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="yes">Yes</string>
+    <string name="No">No</string>
+    <string name="delete_dialog_message">Are you sure you want to delete the image?</string>
 </resources>

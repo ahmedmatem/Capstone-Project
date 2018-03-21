@@ -1,14 +1,17 @@
 package com.example.android.pfpnotes;
 
+import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,11 +20,13 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.pfpnotes.common.CameraHelper;
 import com.example.android.pfpnotes.data.DbContract;
 import com.example.android.pfpnotes.data.adapters.ImageAdapter;
 import com.example.android.pfpnotes.models.NoteModel;
+import com.example.android.pfpnotes.ui.DeleteDialogFragment;
 
 import java.util.ArrayList;
 
@@ -40,7 +45,8 @@ import static com.example.android.pfpnotes.NoteAddActivity.REQUEST_IMAGE_CAPTURE
  * create an instance of this fragment.
  */
 public class NoteAddEditFragment extends Fragment
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor>,
+        ImageAdapter.OnThumbnailClickListener{
     private static final String TAG = "NoteAddEditFragment";
 
     public static final int PLACE_LOADER_ID = 3;
@@ -58,6 +64,7 @@ public class NoteAddEditFragment extends Fragment
 
     private TextView tvDimension;
     private TextView mSelectedPlace;
+    private String mImageToDelete;
 
     public NoteAddEditFragment() {
         // Required empty public constructor
@@ -79,7 +86,10 @@ public class NoteAddEditFragment extends Fragment
             Bundle args = getArguments();
             mNote = (NoteModel) args.getParcelable(ARG_NOTE);
         }
-        mImageAdapter = new ImageAdapter(mNote.getPhotoPaths(), getContext(), getLayoutInflater());
+        mImageAdapter = new ImageAdapter(mNote.getPaths(),
+                getContext(),
+                getLayoutInflater(),
+                this);
         mLoaderManager.initLoader(PLACE_LOADER_ID, null, this);
     }
 
@@ -170,12 +180,12 @@ public class NoteAddEditFragment extends Fragment
             }
         }
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            if (mNote.getPhotoPaths() == null) {
-                mNote.setPhotoPaths(new ArrayList<String>());
+            if (mNote.getPaths() == null) {
+                mNote.setPaths(new ArrayList<String>());
             }
             String path = CameraHelper.getPhotoPath();
-            mNote.getPhotoPaths().add(path);
-            mImageAdapter.setPaths(mNote.getPhotoPaths());
+            mNote.getPaths().add(path);
+            mImageAdapter.setPaths(mNote.getPaths());
         }
     }
 
@@ -214,6 +224,13 @@ public class NoteAddEditFragment extends Fragment
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mPlaceAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onDeleteClick(String path) {
+        mNote.setImageToDelete(path);
+        DeleteDialogFragment dialogFragment = new DeleteDialogFragment();
+        dialogFragment.show(getChildFragmentManager(), "DeleteDialogFragment");
     }
 
     /**

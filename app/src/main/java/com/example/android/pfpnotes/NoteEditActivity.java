@@ -1,20 +1,24 @@
 package com.example.android.pfpnotes;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.android.pfpnotes.common.CameraHelper;
 import com.example.android.pfpnotes.interfaces.OnDatabaseListener;
 import com.example.android.pfpnotes.models.NoteModel;
 import com.example.android.pfpnotes.asynctasks.NoteUpdateAsyncTask;
+import com.example.android.pfpnotes.ui.DeleteDialogFragment;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +28,7 @@ import static com.example.android.pfpnotes.NoteListFragment.ARG_NOTE;
 
 public class NoteEditActivity extends AppCompatActivity implements
         NoteAddEditFragment.OnFragmentInteractionListener,
-        OnDatabaseListener {
+        OnDatabaseListener, DeleteDialogFragment.DeleteDialogListener {
 
     public static final int DIMENSION_REQUEST = 1;
     public static final int REQUEST_IMAGE_CAPTURE = 2;
@@ -106,5 +110,15 @@ public class NoteEditActivity extends AppCompatActivity implements
     public void onDataSaved() {
         Intent intent = new Intent(this, NoteListActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogInterface dialog, int which) {
+        Toast.makeText(this, "path: " + mNote.getImageToDelete(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogInterface dialog, int which) {
+
     }
 }

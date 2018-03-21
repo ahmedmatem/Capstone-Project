@@ -14,7 +14,8 @@ public class NoteModel implements Parcelable {
     private String mShortPlaceName;
     private String mFullPlaceName;
     private String mDimensionText;
-    private ArrayList<String> mPhotoPaths;
+    private ArrayList<String> mPaths;
+    private String mImageToDelete;
 
     public NoteModel(){
 
@@ -32,14 +33,14 @@ public class NoteModel implements Parcelable {
     }
 
     public NoteModel(String shortPlaceName, String fullPlaceName,
-                     String dimensionText, ArrayList<String> photoPaths) {
+                     String dimensionText, ArrayList<String> paths) {
         this(shortPlaceName, fullPlaceName, dimensionText);
-        mPhotoPaths = photoPaths;
+        mPaths = paths;
     }
 
     public NoteModel(int noteId, String shortPlaceName, String fullPlaceName,
-                     String dimensionText, ArrayList<String> photoPaths) {
-        this(shortPlaceName, fullPlaceName, dimensionText, photoPaths);
+                     String dimensionText, ArrayList<String> paths) {
+        this(shortPlaceName, fullPlaceName, dimensionText, paths);
         mNoteId = noteId;
     }
 
@@ -48,7 +49,7 @@ public class NoteModel implements Parcelable {
         mShortPlaceName = in.readString();
         mFullPlaceName = in.readString();
         mDimensionText = in.readString();
-        mPhotoPaths = in.createStringArrayList();
+        mPaths = in.createStringArrayList();
     }
 
     public static final Creator<NoteModel> CREATOR = new Creator<NoteModel>() {
@@ -79,8 +80,8 @@ public class NoteModel implements Parcelable {
         return mDimensionText;
     }
 
-    public ArrayList<String> getPhotoPaths() {
-        return mPhotoPaths;
+    public ArrayList<String> getPaths() {
+        return mPaths;
     }
 
     public void setShortPlaceName(String shortPlaceName) {
@@ -95,8 +96,8 @@ public class NoteModel implements Parcelable {
         mDimensionText = dimensionText;
     }
 
-    public void setPhotoPaths(ArrayList<String> photoPaths) {
-        mPhotoPaths = photoPaths;
+    public void setPaths(ArrayList<String> paths) {
+        mPaths = paths;
     }
 
     @Override
@@ -106,10 +107,19 @@ public class NoteModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+
         dest.writeInt(mNoteId);
         dest.writeString(mShortPlaceName);
         dest.writeString(mFullPlaceName);
         dest.writeString(mDimensionText);
-        dest.writeStringList(mPhotoPaths);
+        dest.writeStringList(mPaths);
+    }
+
+    public String getImageToDelete() {
+        return mImageToDelete;
+    }
+
+    public void setImageToDelete(String imageToDelete) {
+        mImageToDelete = imageToDelete;
     }
 }

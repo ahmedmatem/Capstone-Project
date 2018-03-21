@@ -19,20 +19,21 @@ public class ImageDAO {
     }
 
     public ArrayList<String> getPaths(int noteId){
-        ArrayList<String> paths = null;
+        ArrayList<String> thumbnails = null;
         Cursor cursor = mContentResolver.query(DbContract.ImageEntry.CONTENT_URI,
                 new String[]{DbContract.ImageEntry.COLUMN_IMAGE_PATH},
                 DbContract.ImageEntry.COLUMN_NOTE_ID + "=?",
                 new String[]{String.valueOf(noteId)},
                 null);
         if(cursor != null){
-            paths = new ArrayList<>();
+            thumbnails = new ArrayList<>();
             while (cursor.moveToNext()){
-                paths.add(cursor.getString(cursor.getColumnIndex(
-                        DbContract.ImageEntry.COLUMN_IMAGE_PATH)));
+                String path = cursor.getString(cursor.getColumnIndex(
+                        DbContract.ImageEntry.COLUMN_IMAGE_PATH));
+                thumbnails.add(path);
             }
         }
-        return paths;
+        return thumbnails;
     }
 
     public int deleteBy(int noteId){

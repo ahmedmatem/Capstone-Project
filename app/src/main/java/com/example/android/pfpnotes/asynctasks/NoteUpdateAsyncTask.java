@@ -68,14 +68,14 @@ public class NoteUpdateAsyncTask extends AsyncTask<Context, Void, String> {
     }
 
     private void updateNoteImages(Context context) {
-        ArrayList<String> paths = mNote.getPhotoPaths();
-        if (paths != null && paths.size() > 0) {
+        ArrayList<String> thumbnails = mNote.getPaths();
+        if (thumbnails != null && thumbnails.size() > 0) {
             ContentResolver contentResolver = context.getContentResolver();
             // delete old paths
             new ImageDAO(contentResolver).deleteBy(mNote.getNoteId());
             // add new paths
             boolean isThumbnail = true;
-            for (String path : paths) {
+            for (String path : thumbnails) {
                 ContentValues cv = new ContentValues();
                 cv.put(DbContract.ImageEntry.COLUMN_NOTE_ID, mNote.getNoteId());
                 cv.put(DbContract.ImageEntry.COLUMN_IMAGE_PATH, path);
@@ -87,6 +87,13 @@ public class NoteUpdateAsyncTask extends AsyncTask<Context, Void, String> {
                     isThumbnail = false;
                 }
             }
+        }
+    }
+
+    @Override
+    protected void onPostExecute(String s) {
+        if(mListener != null){
+            mListener.onDataSaved();
         }
     }
 }

@@ -11,17 +11,14 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.android.pfpnotes.data.DbContract;
 import com.example.android.pfpnotes.data.adapters.NoteAdapter;
 import com.example.android.pfpnotes.data.daos.ImageDAO;
 import com.example.android.pfpnotes.data.daos.PlaceDAO;
-import com.example.android.pfpnotes.models.Item;
 import com.example.android.pfpnotes.models.NoteItem;
 import com.example.android.pfpnotes.models.NoteModel;
 
@@ -139,14 +136,15 @@ public class NoteListFragment extends Fragment
         String fullPlaceName = item.getPlace();
         String shortPlaceName = new PlaceDAO(getContext().getContentResolver())
                 .getShortPlaceNameBy(fullPlaceName);
-        ArrayList<String> photoPaths = new ImageDAO(getContext()
-                .getContentResolver()).getPaths(item.getId());
+        ArrayList<String> paths = new ImageDAO(getContext()
+                .getContentResolver())
+                .getPaths(item.getId());
 
         mNote = new NoteModel(item.getId(),
                 shortPlaceName,
                 fullPlaceName,
                 item.getDimension(),
-                photoPaths);
+                paths);
 
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_NOTE, mNote);

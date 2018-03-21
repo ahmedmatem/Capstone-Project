@@ -67,11 +67,11 @@ public class NoteAddAsyncTask extends AsyncTask<Context, Void, Void> {
 
     private void insertNoteImages(Context context, Uri uri) {
         if (uri != null && mNote != null) {
-            if (mNote.getPhotoPaths() != null && mNote.getPhotoPaths().size() > 0) {
+            if (mNote.getPaths() != null && mNote.getPaths().size() > 0) {
                 boolean isThumbnail = true;
                 int noteId = Integer.valueOf(uri.getLastPathSegment());
                 ContentResolver contentResolver = context.getContentResolver();
-                for (String path : mNote.getPhotoPaths()) {
+                for (String path : mNote.getPaths()) {
                     ContentValues cv = new ContentValues();
                     cv.put(DbContract.ImageEntry.COLUMN_NOTE_ID, noteId);
                     cv.put(DbContract.ImageEntry.COLUMN_IMAGE_PATH, path);
