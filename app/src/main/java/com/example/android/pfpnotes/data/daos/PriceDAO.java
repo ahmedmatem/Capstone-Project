@@ -36,8 +36,11 @@ public class PriceDAO {
                 startBound = Double.valueOf(splitInterval[0]);
                 endBound = Double.valueOf(splitInterval[1]);
                 if(startBound <= square && square <= endBound){
-                    return cursor.getDouble(
+                    double price = cursor.getDouble(
                             cursor.getColumnIndex(DbContract.PriceEntry.COLUMN_PRICE));
+                    if(square > 1)
+                        return square * price;
+                    return price;
                 }
             }
         }

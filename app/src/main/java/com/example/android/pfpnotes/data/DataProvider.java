@@ -280,6 +280,22 @@ public class DataProvider extends ContentProvider {
         String mSelection;
         String[] mSelectionArgs;
         switch (match) {
+            case PRICES:
+                numberOfUpdatedRows =
+                        db.update(DbContract.PriceEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case PLACES:
+                numberOfUpdatedRows =
+                        db.update(DbContract.PlaceEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case NOTES:
+                numberOfUpdatedRows =
+                        db.update(DbContract.NoteEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case IMAGES:
+                numberOfUpdatedRows =
+                        db.update(DbContract.ImageEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
             case PRICE_WITH_ID:
                 id = uri.getPathSegments().get(1);
                 mSelection = DbContract.PriceEntry._ID + "=?";

@@ -54,7 +54,6 @@ public class NoteUpdateAsyncTask extends AsyncTask<Context, Void, String> {
         cv.put(DbContract.NoteEntry.COLUMN_HEIGHT, dimension.getHeight());
         cv.put(DbContract.NoteEntry.COLUMN_LAYERS, dimension.getLayers());
         cv.put(DbContract.NoteEntry.COLUMN_COPIES, dimension.getCopies());
-        cv.put(DbContract.NoteEntry.COLUMN_DATE, DateHelper.getCurrentDate());
         double price = new PriceDAO(contentResolver)
                 .getPriceBySquare(dimension.getSquare());
         cv.put(DbContract.NoteEntry.COLUMN_PRICE,

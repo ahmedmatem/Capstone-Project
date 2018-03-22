@@ -122,4 +122,9 @@ public class NoteAddActivity extends AppCompatActivity
         Intent intent = new Intent(this, NoteListActivity.class);
         startActivity(intent);
     }
+
+    @Override
+    public void onDataDeleted() {
+
+    }
 }

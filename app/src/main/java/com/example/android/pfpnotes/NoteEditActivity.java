@@ -2,6 +2,7 @@ package com.example.android.pfpnotes;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -9,12 +10,16 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.android.pfpnotes.asynctasks.DeleteImageAsyncTask;
 import com.example.android.pfpnotes.common.CameraHelper;
+import com.example.android.pfpnotes.data.DbContract;
+import com.example.android.pfpnotes.data.daos.ImageDAO;
 import com.example.android.pfpnotes.interfaces.OnDatabaseListener;
 import com.example.android.pfpnotes.models.NoteModel;
 import com.example.android.pfpnotes.asynctasks.NoteUpdateAsyncTask;
@@ -33,7 +38,7 @@ public class NoteEditActivity extends AppCompatActivity implements
     public static final int DIMENSION_REQUEST = 1;
     public static final int REQUEST_IMAGE_CAPTURE = 2;
 
-    private Fragment mFragment;
+    private NoteAddEditFragment mFragment;
     private NoteModel mNote;
 
     @Override
@@ -113,12 +118,21 @@ public class NoteEditActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onDataDeleted() {
+        if(mNote.getPaths().remove(mNote.getImageToDelete())){
+            // this will cause notify data set changed
+            mFragment.getImageAdapter().setPaths(mNote.getPaths());
+        }
+    }
+
+    @Override
     public void onDialogPositiveClick(DialogInterface dialog, int which) {
-        Toast.makeText(this, "path: " + mNote.getImageToDelete(), Toast.LENGTH_SHORT).show();
+        new DeleteImageAsyncTask(this).execute(mNote);
+        dialog.dismiss();
     }
 
     @Override
     public void onDialogNegativeClick(DialogInterface dialog, int which) {
-
+        dialog.cancel();
     }
 }

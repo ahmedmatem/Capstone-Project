@@ -41,6 +41,7 @@
 
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
 
     <string name="dimension_uppercase">DIMENSION</string>
     <string name="images">Images</string>
@@ -48,8 +49,6 @@
 
     <string name="email_address">email</string>
     <string name="title_activity_note_edit">Edit</string>
-    <string name="delete">Delete</string>
-    <string name="yes">Yes</string>
-    <string name="No">No</string>
-    <string name="delete_dialog_message">Are you sure you want to delete the image?</string>
+
+    <string name="delete_dialog_message">Delete image?</string>
 </resources>

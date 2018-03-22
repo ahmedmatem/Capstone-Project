@@ -6,4 +6,5 @@ package com.example.android.pfpnotes.interfaces;
 
 public interface OnDatabaseListener {
     void onDataSaved();
+    void onDataDeleted();
 }

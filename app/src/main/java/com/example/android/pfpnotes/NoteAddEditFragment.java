@@ -252,4 +252,8 @@ public class NoteAddEditFragment extends Fragment
     public NoteModel getNote() {
         return mNote;
     }
+
+    public ImageAdapter getImageAdapter() {
+        return mImageAdapter;
+    }
 }
