@@ -2,6 +2,7 @@ package com.example.android.pfpnotes;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.android.pfpnotes.asynctasks.DeleteImageAsyncTask;
 import com.example.android.pfpnotes.asynctasks.NoteAddAsyncTask;
 import com.example.android.pfpnotes.common.CameraHelper;
 import com.example.android.pfpnotes.data.DateHelper;
@@ -33,13 +35,13 @@ import java.util.ArrayList;
 
 public class NoteAddActivity extends AppCompatActivity
         implements NoteAddEditFragment.OnFragmentInteractionListener,
-        OnDatabaseListener{
+        OnDatabaseListener, DeleteDialogFragment.DeleteDialogListener{
     private static final String TAG = "NoteAddActivity";
 
     public static final int DIMENSION_REQUEST = 1;
     public static final int REQUEST_IMAGE_CAPTURE = 2;
 
-    private Fragment mFragment;
+    private NoteAddEditFragment mFragment;
     private NoteModel mNote = new NoteModel();
 
     private MenuItem mAddMenuItem;
@@ -125,6 +127,20 @@ public class NoteAddActivity extends AppCompatActivity
 
     @Override
     public void onDataDeleted() {
+        if(mNote.getPaths().remove(mNote.getImageToDelete())){
+            // this will cause notify data set changed
+            mFragment.getImageAdapter().setPaths(mNote.getPaths());
+        }
+    }
 
+    @Override
+    public void onDialogPositiveClick(DialogInterface dialog, int which) {
+        new DeleteImageAsyncTask(this).execute(mNote);
+        dialog.dismiss();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogInterface dialog, int which) {
+        dialog.cancel();
     }
 }
