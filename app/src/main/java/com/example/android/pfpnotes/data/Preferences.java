@@ -52,4 +52,14 @@ public class Preferences {
         return mUserPreferences.getString(mContext.getString(R.string.email_address),
                 defaultUserEmail);
     }
+
+    public void setSignedIn(boolean isSignedIn) {
+        mUserPreferences.edit()
+                .putBoolean(mContext.getString(R.string.signed_in), isSignedIn)
+                .commit();
+    }
+
+    public boolean isSignedIn(){
+        return mUserPreferences.getBoolean(mContext.getString(R.string.signed_in), false);
+    }
 }

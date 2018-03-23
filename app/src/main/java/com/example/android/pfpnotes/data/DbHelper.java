@@ -12,7 +12,7 @@ import com.example.android.pfpnotes.data.DbContract.NoteEntry.NoteStatus;
 
 public class DbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "pfp.db";
-    public static final int DATABASE_VERSION = 12;
+    public static final int DATABASE_VERSION = 13;
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -63,10 +63,10 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + DbContract.PriceEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + DbContract.PlaceEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + DbContract.NoteEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + DbContract.ImageEntry.TABLE_NAME);
-        onCreate(db);
+//        db.execSQL("DROP TABLE IF EXISTS " + DbContract.PriceEntry.TABLE_NAME);
+//        db.execSQL("DROP TABLE IF EXISTS " + DbContract.PlaceEntry.TABLE_NAME);
+//        db.execSQL("DROP TABLE IF EXISTS " + DbContract.NoteEntry.TABLE_NAME);
+//        db.execSQL("DROP TABLE IF EXISTS " + DbContract.ImageEntry.TABLE_NAME);
+//        onCreate(db);
     }
 }

@@ -6,13 +6,19 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import com.example.android.pfpnotes.data.Preferences;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class NoteListActivity extends AppCompatActivity
         implements NoteListFragment.OnFragmentInteractionListener {
-
+    private MenuItem mSignInMenuItem;
+    private MenuItem mSignOutMenuItem;
     private NoteListFragment mNoteListFragment;
 
     @Override
@@ -42,7 +48,17 @@ public class NoteListActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_note_list, menu);
+        mSignInMenuItem = menu.findItem(R.id.action_sign_in);
+        mSignOutMenuItem = menu.findItem(R.id.action_sign_out);
+        updateMenu();
         return true;
+    }
+
+    private void updateMenu() {
+        boolean isSignedIn = new Preferences(this).isSignedIn();
+        mSignInMenuItem.setVisible(!isSignedIn);
+        mSignOutMenuItem.setVisible(isSignedIn);
+
     }
 
     @Override
@@ -54,14 +70,26 @@ public class NoteListActivity extends AppCompatActivity
                 intent = new Intent(this, PriceListActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.action_edit_note:
-                break;
             case R.id.action_places:
                 intent = new Intent(this, PlaceListActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.action_sign_in:
+                intent = new Intent(this, SignInActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.action_sign_out:
+                signOut();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void signOut() {
+        FirebaseAuth.getInstance().signOut();
+        new Preferences(this).setSignedIn(false);
+        updateMenu();
+        Toast.makeText(this, R.string.toast_sign_out, Toast.LENGTH_LONG).show();
     }
 
     @Override
