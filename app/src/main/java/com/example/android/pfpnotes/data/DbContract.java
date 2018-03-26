@@ -49,7 +49,7 @@ public class DbContract {
         public interface NoteStatus {
             int STATUS_DONE = 0;
             int STATUS_UPLOAD = 1;
-            int STATUS_SYNC = 2;
+            int STATUS_UPDATE = 2;
         }
 
         public static final String FULL_ID = TABLE_NAME + "." + _ID;

@@ -21,19 +21,21 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class SignInActivity extends AppCompatActivity {
-    private static final String TAG = "SignInActivity";
+    public static final String SOURCE_ACTIVITY_NAME = "source_activity_name";
 
     private Connection mConnection;
     private FirebaseAuth mAuth;
 
     private Preferences mPreferences;
+    private Bundle mBundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        // TODO: check internet connection before signing in
+        mBundle = getIntent().getExtras();
+
         mConnection = new Connection(this);
         if(!mConnection.isConnected()){
             Intent intent =
@@ -99,8 +101,20 @@ public class SignInActivity extends AppCompatActivity {
             mPreferences.writeUserEmail(currentUser.getEmail());
             mPreferences.setSignedIn(true);
 
-            Intent intent = new Intent(SignInActivity.this, NoteListActivity.class);
-            startActivity(intent);
+            if(mBundle != null && mBundle.containsKey(SOURCE_ACTIVITY_NAME)) {
+                String sourceActivityName = mBundle.getString(SOURCE_ACTIVITY_NAME);
+                switch (sourceActivityName){
+                    case "UploadActivity":
+                        Intent intent = new Intent(this, UploadActivity.class);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                        break;
+                        default:
+                }
+            } else {
+                Intent intent = new Intent(this, NoteListActivity.class);
+                startActivity(intent);
+            }
         }
     }
 }

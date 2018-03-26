@@ -91,8 +91,20 @@
         </activity>
         <activity
             android:name=".NoteEditActivity"
+            android:configChanges="orientation"
             android:label="@string/title_activity_note_edit"
             android:launchMode="singleTop"
+            android:parentActivityName=".NoteListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".NoteListActivity"/>
+        </activity>
+        <activity
+            android:name=".UploadActivity"
+            android:configChanges="orientation"
+            android:label="Upload"
             android:parentActivityName=".NoteListActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">

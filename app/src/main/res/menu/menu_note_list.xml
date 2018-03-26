@@ -2,17 +2,27 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.example.android.pfpnotes.NoteListActivity">
+
     <group
-        android:orderInCategory="100">
+        android:orderInCategory="200">
         <item
             android:id="@+id/action_price_list"
-            android:orderInCategory="120"
+            android:orderInCategory="220"
             android:title="@string/menu_action_price_list"
             app:showAsAction="never"/>
         <item
             android:id="@+id/action_places"
-            android:orderInCategory="140"
+            android:orderInCategory="240"
             android:title="@string/menu_action_place_list"
+            app:showAsAction="never"/>
+    </group>
+
+    <group
+        android:orderInCategory="300">
+        <item
+            android:id="@+id/action_upload"
+            android:orderInCategory="320"
+            android:title="@string/menu_action_upload"
             app:showAsAction="never"/>
     </group>
 
@@ -21,12 +31,12 @@
         <item
             android:id="@+id/action_sign_in"
             android:orderInCategory="520"
-            android:title="@string/action_sign_in"
+            android:title="@string/menu_action_sign_in"
             app:showAsAction="never"/>
         <item
             android:id="@+id/action_sign_out"
             android:orderInCategory="520"
-            android:title="@string/action_sign_out"
+            android:title="@string/menu_action_sign_out"
             app:showAsAction="never"/>
     </group>
 </menu>

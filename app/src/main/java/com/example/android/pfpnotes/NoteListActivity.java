@@ -81,6 +81,10 @@ public class NoteListActivity extends AppCompatActivity
             case R.id.action_sign_out:
                 signOut();
                 break;
+            case R.id.action_upload:
+                intent = new Intent(this, UploadActivity.class);
+                startActivity(intent);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -1,5 +1,5 @@
 # Capstone-Project
 Udacity Capstone Project
 
-// TODO: add Sign out action to main menu
+// TODO: make note list of cards (with actions: Upload, Edit, Detail)
 // TODO: add upload action to main menu
