@@ -52,6 +52,13 @@ public class DbContract {
             int STATUS_UPDATE = 2;
         }
 
+        public static Uri buildContentUriWithId(int id){
+            return BASE_CONTENT_URI.buildUpon()
+                    .appendPath(PATH_NOTES )
+                    .appendPath(String.valueOf(id))
+                    .build();
+        }
+
         public static final String FULL_ID = TABLE_NAME + "." + _ID;
         public static final String COLUMN_EMAIL = "email";
         public static final String FULL_EMAIL = TABLE_NAME + "." + COLUMN_EMAIL;
@@ -74,13 +81,6 @@ public class DbContract {
 
         // COLUMNS for note photo
         public static final String COLUMN_IMAGE_PATH = "image_path";
-
-        public static Uri buildUriWithId(String id){
-            return BASE_CONTENT_URI.buildUpon()
-                    .appendPath(PATH_NOTES)
-                    .appendPath(id)
-                    .build();
-        }
 
         static {
             sNoteProjectionMap = new HashMap<>();

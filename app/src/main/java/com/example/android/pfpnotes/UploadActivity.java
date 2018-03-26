@@ -24,14 +24,14 @@ import static com.example.android.pfpnotes.SignInActivity.SOURCE_ACTIVITY_NAME;
 
 public class UploadActivity extends AppCompatActivity
         implements UploadInfoAsyncTask.UploadDataListener,
-        ConnectionDialogFragment.ConnectionDialogListener{
+        ConnectionDialogFragment.ConnectionDialogListener {
 
     public static final int SIGN_IN_REQUEST_CODE = 20;
 
     private TextView mNotesToUploadInfo;
     private TextView mImagesToUploadInfo;
 
-    private Map<Note,List<Image>> mData;
+    private Map<Note, List<Image>> mData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class UploadActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Connection connection = new Connection(UploadActivity.this);
-                if(connection.isConnected()){
+                if (connection.isConnected()) {
                     boolean isSignedIn = new Preferences(UploadActivity.this).isSignedIn();
                     if (isSignedIn) {
                         new UploadAsyncTask(mData).execute(UploadActivity.this);
@@ -59,7 +59,7 @@ public class UploadActivity extends AppCompatActivity
                         startActivityForResult(intent, SIGN_IN_REQUEST_CODE);
                     }
                 } else {
-                    ConnectionDialogFragment  connectionDialogFragment =
+                    ConnectionDialogFragment connectionDialogFragment =
                             new ConnectionDialogFragment();
                     connectionDialogFragment.show(getSupportFragmentManager(), "ConnectionDialog");
                 }
@@ -70,19 +70,25 @@ public class UploadActivity extends AppCompatActivity
     }
 
     @Override
-    public void onUploadDataReceived(Map<Note,List<Image>> data) {
+    public void onUploadDataReceived(Map<Note, List<Image>> data) {
+        if (data == null) {
+            //TODO: update UI for no data to upload
+            return;
+        }
+
         mData = data;
         mNotesToUploadInfo.setText("Notes: " + data.size());
         int imagesCount = getImagesCount();
-        mImagesToUploadInfo.setText("Images: " + imagesCount );
+        mImagesToUploadInfo.setText("Images: " + imagesCount);
     }
 
     private int getImagesCount() {
         int count = 0;
-        for (Map.Entry<Note, List<Image>> entry : mData.entrySet()){
+        for (Map.Entry<Note, List<Image>> entry : mData.entrySet()) {
+            if (entry.getValue() == null) break;
             count += entry.getValue().size();
         }
-        return  count;
+        return count;
     }
 
     @Override

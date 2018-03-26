@@ -60,7 +60,7 @@ public class NoteUpdateAsyncTask extends AsyncTask<Context, Void, String> {
                 price * dimension.getLayers() * dimension.getCopies());
 
         return contentResolver.update(
-                DbContract.NoteEntry.buildUriWithId(String.valueOf(mNote.getNoteId())),
+                DbContract.NoteEntry.buildContentUriWithId(mNote.getNoteId()),
                 cv,
                 null,
                 null);

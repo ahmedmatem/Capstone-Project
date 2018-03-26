@@ -1,11 +1,13 @@
 package com.example.android.pfpnotes.asynctasks;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.example.android.pfpnotes.data.DbContract;
 import com.example.android.pfpnotes.data.Preferences;
 import com.example.android.pfpnotes.models.Image;
 import com.example.android.pfpnotes.models.Note;
@@ -31,6 +33,7 @@ public class UploadAsyncTask extends AsyncTask<Context, Void, Void> {
     private FirebaseFirestore mFirebaseFirestore;
     private Map<Note, List<Image>> mData;
     private String mUserName;
+    Context mContext;
 
     public UploadAsyncTask(Map<Note, List<Image>> data) {
         mFirebaseStorage = FirebaseStorage.getInstance();
@@ -40,15 +43,17 @@ public class UploadAsyncTask extends AsyncTask<Context, Void, Void> {
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        Context context = contexts[0];
+        mContext = contexts[0];
         // path: images/username/{image_name}
-        mUserName = new Preferences(context).readUserEmail().split("@")[0];
+        mUserName = new Preferences(mContext).readUserEmail().split("@")[0];
         String imagePath = "images/" + mUserName + "/";
         for (Map.Entry<Note, List<Image>> entry : mData.entrySet()) {
             uploadImage(entry, imagePath);
         }
         return null;
     }
+
+    //TODO: implement progress bar
 
     private void uploadImage(Map.Entry<Note, List<Image>> entry, String imagePath) {
         StorageReference userImageReference;
@@ -63,6 +68,9 @@ public class UploadAsyncTask extends AsyncTask<Context, Void, Void> {
                 userImageReference = mFirebaseStorage.getReference(imagePath + fileName);
                 upload(entry, userImageReference, localImageUri);
             }
+        } else {
+            // note has no images
+            uploadNote(entry, null);
         }
     }
 
@@ -82,7 +90,7 @@ public class UploadAsyncTask extends AsyncTask<Context, Void, Void> {
         });
     }
 
-    private void uploadNote(Map.Entry<Note, List<Image>> entry, Uri downloadUrl) {
+    private void uploadNote(final Map.Entry<Note, List<Image>> entry, Uri downloadUrl) {
         Note note = entry.getKey();
         Map<String, Object> remoteNote = new HashMap<>();
         remoteNote.put("id", note.getId());
@@ -95,7 +103,9 @@ public class UploadAsyncTask extends AsyncTask<Context, Void, Void> {
         remoteNote.put("status", note.getStatus());
         remoteNote.put("price", note.getPrice());
         remoteNote.put("date", note.getDate());
-        remoteNote.put("downloadUrl", downloadUrl.toString());
+        if(downloadUrl != null) {
+            remoteNote.put("downloadUrl", downloadUrl.toString());
+        }
 
         // notes/{user-name}/remoteNote
         mFirebaseFirestore.collection("notes")
@@ -103,7 +113,7 @@ public class UploadAsyncTask extends AsyncTask<Context, Void, Void> {
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-
+                        updateLocalNote(entry);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -112,5 +122,16 @@ public class UploadAsyncTask extends AsyncTask<Context, Void, Void> {
 
                     }
                 });
+    }
+
+    private void updateLocalNote(Map.Entry<Note, List<Image>> entry) {
+        Note note = entry.getKey();
+        ContentValues cv = new ContentValues();
+        cv.put(DbContract.NoteEntry.COLUMN_STATUS, DbContract.NoteEntry.NoteStatus.STATUS_UPDATE);
+        mContext.getContentResolver().update(
+                DbContract.NoteEntry.buildContentUriWithId(note.getId()),
+                cv,
+                null,
+                null);
     }
 }
