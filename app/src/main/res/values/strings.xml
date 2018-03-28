@@ -22,6 +22,7 @@
 
     <!--menu actions-->
     <string name="menu_action_upload">Upload</string>
+    <string name="menu_action_update">Update</string>
     <string name="menu_action_price_list">Price list</string>
     <string name="menu_action_place_list">Place list</string>
     <string name="menu_action_sign_out">Sign out</string>
@@ -58,4 +59,6 @@
     <string name="connection_dialog_message">No network. Switch it on or try later.</string>
     <string name="toast_sign_out">You signed out successfully.</string>
     <string name="upload">Upload</string>
+
+    <string name="progress_max_100">100</string>
 </resources>

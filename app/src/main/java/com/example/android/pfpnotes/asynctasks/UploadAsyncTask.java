@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -33,12 +34,34 @@ public class UploadAsyncTask extends AsyncTask<Context, Void, Void> {
     private FirebaseFirestore mFirebaseFirestore;
     private Map<Note, List<Image>> mData;
     private String mUserName;
-    Context mContext;
+    private Context mContext;
+    private OnUploadListener mListener;
 
-    public UploadAsyncTask(Map<Note, List<Image>> data) {
+    public interface OnUploadListener {
+        void onNotesProgressChanged(int currentNoteNumber);
+
+        void onImagesProgressChanged(int currentImageNumber);
+    }
+
+    private int mNumberOfUploadedNotes = 0;
+    private int mNumberOfUploadedImages = 0;
+
+    public UploadAsyncTask(OnUploadListener listener, Map<Note, List<Image>> data) {
+        mListener = listener;
         mFirebaseStorage = FirebaseStorage.getInstance();
         mFirebaseFirestore = FirebaseFirestore.getInstance();
         mData = data;
+    }
+
+    private int getNumberOfImages(Map<Note, List<Image>> data) {
+        int numberOfImages = 0;
+        if (data == null) return numberOfImages;
+        for (Map.Entry<Note, List<Image>> entry : data.entrySet()) {
+            if (entry.getValue() != null) {
+                numberOfImages += entry.getValue().size();
+            }
+        }
+        return numberOfImages;
     }
 
     @Override
@@ -48,25 +71,25 @@ public class UploadAsyncTask extends AsyncTask<Context, Void, Void> {
         mUserName = new Preferences(mContext).readUserEmail().split("@")[0];
         String imagePath = "images/" + mUserName + "/";
         for (Map.Entry<Note, List<Image>> entry : mData.entrySet()) {
-            uploadImage(entry, imagePath);
+            upload(entry, imagePath);
         }
         return null;
     }
 
     //TODO: implement progress bar
 
-    private void uploadImage(Map.Entry<Note, List<Image>> entry, String imagePath) {
+    private void upload(Map.Entry<Note, List<Image>> entry, String imagePath) {
         StorageReference userImageReference;
-        List<Image> images = null;
-        String fileName = null;
-        Uri localImageUri = null;
-        images = entry.getValue();
+        List<Image> images = entry.getValue();
         if (images != null) {
+            String fileName = null;
+            Uri localImageUri = null;
+            File image;
             for (Image img : images) {
                 localImageUri = Uri.fromFile(new File(img.getPath()));
                 fileName = localImageUri.getLastPathSegment();
                 userImageReference = mFirebaseStorage.getReference(imagePath + fileName);
-                upload(entry, userImageReference, localImageUri);
+                uploadImage(entry, userImageReference, localImageUri);
             }
         } else {
             // note has no images
@@ -74,7 +97,9 @@ public class UploadAsyncTask extends AsyncTask<Context, Void, Void> {
         }
     }
 
-    private void upload(final Map.Entry<Note, List<Image>> entry, StorageReference imageRef, Uri localImageUri) {
+    private void uploadImage(final Map.Entry<Note, List<Image>> entry,
+                             StorageReference imageRef,
+                             Uri localImageUri) {
         UploadTask uploadTask = imageRef.putFile(localImageUri);
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
@@ -84,6 +109,9 @@ public class UploadAsyncTask extends AsyncTask<Context, Void, Void> {
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                if (mListener != null) {
+                    mListener.onImagesProgressChanged(++mNumberOfUploadedImages);
+                }
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 uploadNote(entry, downloadUrl);
             }
@@ -103,7 +131,7 @@ public class UploadAsyncTask extends AsyncTask<Context, Void, Void> {
         remoteNote.put("status", note.getStatus());
         remoteNote.put("price", note.getPrice());
         remoteNote.put("date", note.getDate());
-        if(downloadUrl != null) {
+        if (downloadUrl != null) {
             remoteNote.put("downloadUrl", downloadUrl.toString());
         }
 
@@ -114,6 +142,9 @@ public class UploadAsyncTask extends AsyncTask<Context, Void, Void> {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         updateLocalNote(entry);
+                        if (mListener != null) {
+                            mListener.onNotesProgressChanged(++mNumberOfUploadedNotes);
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
