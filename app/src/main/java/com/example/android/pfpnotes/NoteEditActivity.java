@@ -2,24 +2,17 @@ package com.example.android.pfpnotes;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.android.pfpnotes.asynctasks.DeleteImageAsyncTask;
-import com.example.android.pfpnotes.common.CameraHelper;
-import com.example.android.pfpnotes.data.DbContract;
-import com.example.android.pfpnotes.data.daos.ImageDAO;
+import com.example.android.pfpnotes.common.ImageHelper;
 import com.example.android.pfpnotes.interfaces.OnDatabaseListener;
 import com.example.android.pfpnotes.models.NoteModel;
 import com.example.android.pfpnotes.asynctasks.NoteUpdateAsyncTask;
@@ -91,7 +84,7 @@ public class NoteEditActivity extends AppCompatActivity implements
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             File photoFile = null;
             try {
-                photoFile = new CameraHelper(this).createImageFile();
+                photoFile = new ImageHelper(this).createImageFile();
             } catch (IOException e) {
 
             }

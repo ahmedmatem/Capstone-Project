@@ -31,6 +31,6 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
         mDimension = (TextView) itemView.findViewById(R.id.tv_dimension);
         mPrice = (TextView) itemView.findViewById(R.id.tv_price);
         mEdit = (ImageView) itemView.findViewById(R.id.btn_edit);
-        mDetail = (ImageView) itemView.findViewById(R.id.btn_detail);
+        mDetail = (ImageView) itemView.findViewById(R.id.btn_upload);
     }
 }

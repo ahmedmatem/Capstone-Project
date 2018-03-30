@@ -56,10 +56,11 @@ public class UploadActivity extends AppCompatActivity
         mNotesProgressBar = (ProgressBar) findViewById(R.id.pr_bar_notes);
         mImagesProgressBar = (ProgressBar) findViewById(R.id.pr_bar_images);
 
-        Button uploadButton = (Button) findViewById(R.id.btn_detail);
+        Button uploadButton = (Button) findViewById(R.id.btn_upload);
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.setEnabled(false);
                 Connection connection = new Connection(UploadActivity.this);
                 if (connection.isConnected()) {
                     boolean isSignedIn = new Preferences(UploadActivity.this).isSignedIn();

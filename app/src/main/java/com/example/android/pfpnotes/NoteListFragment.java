@@ -144,7 +144,7 @@ public class NoteListFragment extends Fragment
             case R.id.btn_edit:
                 startNoteEditActivity(item);
                 break;
-            case R.id.btn_detail:
+            case R.id.btn_upload:
                 Toast.makeText(getContext(), "Detail", Toast.LENGTH_LONG).show();
                 break;
         }

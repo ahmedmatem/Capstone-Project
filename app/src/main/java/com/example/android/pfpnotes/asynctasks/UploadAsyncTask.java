@@ -2,10 +2,12 @@ package com.example.android.pfpnotes.asynctasks;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+import com.example.android.pfpnotes.common.Performance;
 import com.example.android.pfpnotes.data.DbContract;
 import com.example.android.pfpnotes.data.Preferences;
 import com.example.android.pfpnotes.models.Image;
@@ -18,7 +20,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,19 +91,28 @@ public class UploadAsyncTask extends AsyncTask<Context, Void, Void> {
                 localImageUri = Uri.fromFile(new File(img.getPath()));
                 fileName = localImageUri.getLastPathSegment();
                 userImageReference = mFirebaseStorage.getReference(imagePath + fileName);
-                uploadImage(entry, userImageReference, localImageUri);
+                uploadImage(img.getPath(), userImageReference, entry);
             }
         }
     }
 
-    private void uploadImage(final Map.Entry<Note, List<Image>> entry,
-                             StorageReference imageRef,
-                             Uri localImageUri) {
-        UploadTask uploadTask = imageRef.putFile(localImageUri);
+    private void uploadImage(
+            String path,
+            StorageReference imageRef,
+            final Map.Entry<Note, List<Image>> entry) {
+        Bitmap bitmap = Performance.decodeSampledBitmapFromFile(
+                path,
+                Performance.IN_SAMPLE_SIZE_REQ_WIDTH,
+                Performance.IN_SAMPLE_SIZE_REQ_HEIGHT);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, Performance.COMPRESS_QUALITY, outputStream);
+        byte[] data = outputStream.toByteArray();
+
+        UploadTask uploadTask = imageRef.putBytes(data);
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onFailure(@NonNull Exception e) {
-
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override

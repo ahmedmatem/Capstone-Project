@@ -1,13 +1,9 @@
 package com.example.android.pfpnotes;
 
-import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -20,9 +16,8 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.android.pfpnotes.common.CameraHelper;
+import com.example.android.pfpnotes.common.ImageHelper;
 import com.example.android.pfpnotes.data.DbContract;
 import com.example.android.pfpnotes.data.adapters.ImageAdapter;
 import com.example.android.pfpnotes.models.NoteModel;
@@ -182,7 +177,7 @@ public class NoteAddEditFragment extends Fragment
             if (mNote.getPaths() == null) {
                 mNote.setPaths(new ArrayList<String>());
             }
-            String path = CameraHelper.getPhotoPath();
+            String path = ImageHelper.getPhotoPath();
             mNote.getPaths().add(path);
             mImageAdapter.setPaths(mNote.getPaths());
         }

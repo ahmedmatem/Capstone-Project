@@ -9,6 +9,11 @@ import android.graphics.BitmapFactory;
  */
 
 public class Performance {
+    public static final int IN_SAMPLE_SIZE_REQ_WIDTH = 300;
+    public static final int IN_SAMPLE_SIZE_REQ_HEIGHT = 300;
+
+    public static final int COMPRESS_QUALITY = 100;
+
     public static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
