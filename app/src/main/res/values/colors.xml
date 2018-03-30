@@ -7,5 +7,5 @@
     <color name="colorBorder">#888</color>
     <color name="backgroundColor">#ccc</color>
 
-    <color name="transparent_white_bg">#C9FFFFFF</color>
+    <color name="transparent_white_bg">#AFFF</color>
 </resources>

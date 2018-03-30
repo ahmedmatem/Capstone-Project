@@ -18,6 +18,7 @@ public class NoteItem extends Item {
     private String mPlace;
     private String mDate;
     private String mPath;
+    private int mNoteStatus;
 
     public NoteItem(Cursor cursor) {
         mId = cursor.getInt(cursor
@@ -36,6 +37,8 @@ public class NoteItem extends Item {
                 .getColumnIndex(DbContract.NoteEntry.COLUMN_DATE));
         mCopies = cursor.getInt(cursor
                 .getColumnIndex(DbContract.NoteEntry.COLUMN_COPIES));
+        mNoteStatus = cursor.getInt(cursor
+                .getColumnIndex(DbContract.NoteEntry.COLUMN_STATUS));
 
         mPath = cursor.getString(cursor
                 .getColumnIndex(DbContract.ImageEntry.COLUMN_IMAGE_PATH));
@@ -86,6 +89,10 @@ public class NoteItem extends Item {
 
     public int getCopies() {
         return mCopies;
+    }
+
+    public int getNoteStatus() {
+        return mNoteStatus;
     }
 
     @Override

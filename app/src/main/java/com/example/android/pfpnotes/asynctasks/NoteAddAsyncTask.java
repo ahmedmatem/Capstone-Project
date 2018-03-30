@@ -60,7 +60,7 @@ public class NoteAddAsyncTask extends AsyncTask<Context, Void, Void> {
                 .getPriceBySquare(dimension.getSquare());
         cv.put(DbContract.NoteEntry.COLUMN_PRICE,
                 price * dimension.getLayers() * dimension.getCopies());
-        cv.put(DbContract.NoteEntry.COLUMN_STATUS, DbContract.NoteEntry.NoteStatus.STATUS_UPLOAD);
+        cv.put(DbContract.NoteEntry.COLUMN_STATUS, DbContract.NoteEntry.Status.UPLOAD);
 
         return contentResolver.insert(DbContract.NoteEntry.CONTENT_URI, cv);
     }

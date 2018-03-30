@@ -5,7 +5,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.example.android.pfpnotes.data.DbContract;
 import com.example.android.pfpnotes.data.Preferences;
@@ -16,7 +15,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -76,8 +74,6 @@ public class UploadAsyncTask extends AsyncTask<Context, Void, Void> {
         return null;
     }
 
-    //TODO: implement progress bar
-
     private void upload(Map.Entry<Note, List<Image>> entry, String imagePath) {
         StorageReference userImageReference;
         List<Image> images = entry.getValue();
@@ -91,9 +87,6 @@ public class UploadAsyncTask extends AsyncTask<Context, Void, Void> {
                 userImageReference = mFirebaseStorage.getReference(imagePath + fileName);
                 uploadImage(entry, userImageReference, localImageUri);
             }
-        } else {
-            // note has no images
-            uploadNote(entry, null);
         }
     }
 
@@ -141,7 +134,8 @@ public class UploadAsyncTask extends AsyncTask<Context, Void, Void> {
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        updateLocalNote(entry);
+                        String documentId = documentReference.getId();
+                        updateLocalNote(entry, documentId);
                         if (mListener != null) {
                             mListener.onNotesProgressChanged(++mNumberOfUploadedNotes);
                         }
@@ -155,10 +149,11 @@ public class UploadAsyncTask extends AsyncTask<Context, Void, Void> {
                 });
     }
 
-    private void updateLocalNote(Map.Entry<Note, List<Image>> entry) {
+    private void updateLocalNote(Map.Entry<Note, List<Image>> entry, String documentId) {
         Note note = entry.getKey();
         ContentValues cv = new ContentValues();
-        cv.put(DbContract.NoteEntry.COLUMN_STATUS, DbContract.NoteEntry.NoteStatus.STATUS_UPDATE);
+        cv.put(DbContract.NoteEntry.COLUMN_STATUS, DbContract.NoteEntry.Status.DONE);
+        cv.put(DbContract.NoteEntry.COLUMN_DOCUMENT_ID, documentId);
         mContext.getContentResolver().update(
                 DbContract.NoteEntry.buildContentUriWithId(note.getId()),
                 cv,

@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.android.pfpnotes.data.DbContract;
 import com.example.android.pfpnotes.data.adapters.NoteAdapter;
@@ -34,7 +35,8 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class NoteListFragment extends Fragment
-        implements LoaderManager.LoaderCallbacks<Cursor>, NoteAdapter.OnItemClickListener {
+        implements LoaderManager.LoaderCallbacks<Cursor>,
+        NoteAdapter.OnItemClickListener {
     private static final String TAG = "NoteListFragment";
     private static final int NOTE_LOADER_ID = 5;
     // TODO: Rename parameter arguments, choose names that match
@@ -131,8 +133,24 @@ public class NoteListFragment extends Fragment
         mRecyclerView.setAdapter(null);
     }
 
+//    @Override
+//    public void onItemClick(NoteItem item) {
+//
+//    }
+
     @Override
-    public void onItemClick(NoteItem item) {
+    public void onActionClick(NoteItem item, int actionId) {
+        switch (actionId){
+            case R.id.btn_edit:
+                startNoteEditActivity(item);
+                break;
+            case R.id.btn_detail:
+                Toast.makeText(getContext(), "Detail", Toast.LENGTH_LONG).show();
+                break;
+        }
+    }
+
+    private void startNoteEditActivity(NoteItem item) {
         String fullPlaceName = item.getPlace();
         String shortPlaceName = new PlaceDAO(getContext().getContentResolver())
                 .getShortPlaceNameBy(fullPlaceName);
@@ -140,11 +158,13 @@ public class NoteListFragment extends Fragment
                 .getContentResolver())
                 .getPaths(item.getId());
 
-        mNote = new NoteModel(item.getId(),
+        mNote = new NoteModel(
+                item.getId(),
                 shortPlaceName,
                 fullPlaceName,
                 item.getDimension(),
-                paths);
+                paths,
+                item.getNoteStatus());
 
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_NOTE, mNote);

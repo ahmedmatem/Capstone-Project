@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.android.pfpnotes.data.DbContract.NoteEntry.NoteStatus;
+import com.example.android.pfpnotes.data.DbContract.NoteEntry.Status;
 
 /**
  * Created by ahmed on 01/03/2018.
@@ -12,7 +12,7 @@ import com.example.android.pfpnotes.data.DbContract.NoteEntry.NoteStatus;
 
 public class DbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "pfp.db";
-    public static final int DATABASE_VERSION = 13;
+    public static final int DATABASE_VERSION = 14;
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -44,8 +44,9 @@ public class DbHelper extends SQLiteOpenHelper {
                 DbContract.NoteEntry.COLUMN_COPIES + " INTEGER DEFAULT 1," +
                 DbContract.NoteEntry.COLUMN_PRICE + " REAL DEFAULT 0," +
                 DbContract.NoteEntry.COLUMN_DATE + " TEXT NOT NULL," +
+                DbContract.NoteEntry.COLUMN_DOCUMENT_ID + " TEXT," +
                 DbContract.NoteEntry.COLUMN_STATUS + " INTEGER DEFAULT " +
-                NoteStatus.STATUS_UPLOAD + ")";
+                Status.UPLOAD + ")";
 
         final String SQL_CREATE_IMAGE_TABLE = "CREATE TABLE " +
                 DbContract.ImageEntry.TABLE_NAME + " (" +

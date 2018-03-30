@@ -36,8 +36,8 @@ public class UploadInfoAsyncTask extends AsyncTask<Context, Void, Map<Note,List<
         Cursor cursor = context.getContentResolver()
                 .query(DbContract.NoteEntry.CONTENT_URI,
                         null,
-                        DbContract.NoteEntry.COLUMN_STATUS + "=?",
-                        new String[]{String.valueOf(DbContract.NoteEntry.NoteStatus.STATUS_UPLOAD)},
+                        DbContract.NoteEntry.COLUMN_STATUS + "!=?",
+                        new String[]{String.valueOf(DbContract.NoteEntry.Status.DONE)},
                         DbContract.NoteEntry.COLUMN_DATE + " DESC");
 
         ArrayList<Note> notes = new ArrayList<>();
@@ -74,13 +74,16 @@ public class UploadInfoAsyncTask extends AsyncTask<Context, Void, Map<Note,List<
         // put last images for last noteId
         noteImages.put(noteId, images);
 
-        String email = null;
-        Map<Note, List<Image>> uploadData = new HashMap<>();
+        Map<Note, List<Image>> uploadData = null;
+        List<Image> imageList;
         for(Note note : notes){
-            if(email == null){
-                email = note.getEmail();
+            imageList = noteImages.get(note.getId());
+            if(imageList != null) {
+                if(uploadData == null){
+                    uploadData = new HashMap<>();
+                }
+                uploadData.put(note, imageList);
             }
-            uploadData.put(note, noteImages.get(note.getId()));
         }
 
         return uploadData;

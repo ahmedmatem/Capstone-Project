@@ -61,4 +61,5 @@
     <string name="upload">Upload</string>
 
     <string name="progress_max_100">100</string>
+    <string name="no_items_to_upload">No items to upload.</string>
 </resources>

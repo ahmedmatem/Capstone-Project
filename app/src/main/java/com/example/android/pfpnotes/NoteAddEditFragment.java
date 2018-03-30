@@ -64,7 +64,6 @@ public class NoteAddEditFragment extends Fragment
 
     private TextView tvDimension;
     private TextView mSelectedPlace;
-    private String mImageToDelete;
 
     public NoteAddEditFragment() {
         // Required empty public constructor

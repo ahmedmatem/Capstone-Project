@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.example.android.pfpnotes.data.DateHelper;
 import com.example.android.pfpnotes.data.DbContract;
 import com.example.android.pfpnotes.data.Preferences;
 import com.example.android.pfpnotes.data.daos.ImageDAO;
@@ -54,6 +53,9 @@ public class NoteUpdateAsyncTask extends AsyncTask<Context, Void, String> {
         cv.put(DbContract.NoteEntry.COLUMN_HEIGHT, dimension.getHeight());
         cv.put(DbContract.NoteEntry.COLUMN_LAYERS, dimension.getLayers());
         cv.put(DbContract.NoteEntry.COLUMN_COPIES, dimension.getCopies());
+        if(mNote.getStatus() == DbContract.NoteEntry.Status.DONE){
+            cv.put(DbContract.NoteEntry.COLUMN_STATUS, DbContract.NoteEntry.Status.UPDATE);
+        }
         double price = new PriceDAO(contentResolver)
                 .getPriceBySquare(dimension.getSquare());
         cv.put(DbContract.NoteEntry.COLUMN_PRICE,

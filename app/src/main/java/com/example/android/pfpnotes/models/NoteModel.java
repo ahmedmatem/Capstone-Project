@@ -16,31 +16,33 @@ public class NoteModel implements Parcelable {
     private String mDimensionText;
     private ArrayList<String> mPaths;
     private String mImageToDelete;
+    private int mStatus;
 
     public NoteModel(){
 
     }
 
-    public NoteModel(String shortPlaceName, String fullPlaceName, String dimensionText) {
+    public NoteModel(String shortPlaceName, String fullPlaceName, String dimensionText, int status) {
         mShortPlaceName = shortPlaceName;
         mFullPlaceName = fullPlaceName;
         mDimensionText = dimensionText;
+        mStatus = status;
     }
 
-    public NoteModel(int noteId, String shortPlaceName, String fullPlaceName, String dimensionText) {
-        this(shortPlaceName, fullPlaceName, dimensionText);
+    public NoteModel(int noteId, String shortPlaceName, String fullPlaceName, String dimensionText, int status) {
+        this(shortPlaceName, fullPlaceName, dimensionText, status);
         mNoteId = noteId;
     }
 
     public NoteModel(String shortPlaceName, String fullPlaceName,
-                     String dimensionText, ArrayList<String> paths) {
-        this(shortPlaceName, fullPlaceName, dimensionText);
+                     String dimensionText, int status, ArrayList<String> paths) {
+        this(shortPlaceName, fullPlaceName, dimensionText, status);
         mPaths = paths;
     }
 
     public NoteModel(int noteId, String shortPlaceName, String fullPlaceName,
-                     String dimensionText, ArrayList<String> paths) {
-        this(shortPlaceName, fullPlaceName, dimensionText, paths);
+                     String dimensionText, ArrayList<String> paths, int status) {
+        this(shortPlaceName, fullPlaceName, dimensionText, status, paths);
         mNoteId = noteId;
     }
 
@@ -121,5 +123,13 @@ public class NoteModel implements Parcelable {
 
     public void setImageToDelete(String imageToDelete) {
         mImageToDelete = imageToDelete;
+    }
+
+    public int getStatus() {
+        return mStatus;
+    }
+
+    public void setStatus(int status) {
+        mStatus = status;
     }
 }

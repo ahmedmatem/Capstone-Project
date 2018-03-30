@@ -46,10 +46,10 @@ public class DbContract {
         public static final String TABLE_NAME = "notes";
         public static HashMap<String,String> sNoteProjectionMap;
 
-        public interface NoteStatus {
-            int STATUS_DONE = 0;
-            int STATUS_UPLOAD = 1;
-            int STATUS_UPDATE = 2;
+        public interface Status {
+            int DONE = 0;
+            int UPLOAD = 1;
+            int UPDATE = 2;
         }
 
         public static Uri buildContentUriWithId(int id){
@@ -78,6 +78,8 @@ public class DbContract {
         public static final String FULL_PRICE = TABLE_NAME + "." + COLUMN_PRICE;
         public static final String COLUMN_DATE = "date";
         public static final String FULL_DATE = TABLE_NAME + "." + COLUMN_DATE;
+        public static final String COLUMN_DOCUMENT_ID = "document_id";
+        public static final String FULL_DOCUMENT_ID = TABLE_NAME + "." + COLUMN_DOCUMENT_ID;
 
         // COLUMNS for note photo
         public static final String COLUMN_IMAGE_PATH = "image_path";
@@ -94,6 +96,7 @@ public class DbContract {
             sNoteProjectionMap.put(COLUMN_STATUS, FULL_STATUS);
             sNoteProjectionMap.put(COLUMN_PRICE, FULL_PRICE);
             sNoteProjectionMap.put(COLUMN_DATE, FULL_DATE);
+            sNoteProjectionMap.put(COLUMN_DOCUMENT_ID, FULL_DOCUMENT_ID);
             sNoteProjectionMap.put(COLUMN_IMAGE_PATH, ImageEntry.FULL_IMAGE_PATH + " AS " +
                     COLUMN_IMAGE_PATH);
         }
@@ -104,6 +107,13 @@ public class DbContract {
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_IMAGES).build();
         public static final String TABLE_NAME = "images";
 //        public static HashMap<String,String> sImageProjectionMap;
+
+        public interface Status {
+            int DONE = 0;
+            int UPLOAD = 1;
+            int UPDATE = 2;
+            int DELETE = 3;
+        }
 
         public static final String FULL_ID = TABLE_NAME + "." + _ID;
         public static final String COLUMN_NOTE_ID = "note_id";

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 
 import com.example.android.pfpnotes.R;
 import com.example.android.pfpnotes.common.Performance;
@@ -34,7 +35,8 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener {
-        void onItemClick(NoteItem item);
+//        void onItemClick(NoteItem item);
+        void onActionClick(NoteItem item, int actionId);
     }
 
     public NoteAdapter(OnItemClickListener listener,
@@ -111,23 +113,40 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 headerViewHolder.mTotal.setText(String.format("£%.2f", headerItem.getTotalPrice()));
                 break;
             case Item.TYPE_NOTE:
-                NoteItem noteItem = (NoteItem) mData.get(position);
+                final NoteItem noteItem = (NoteItem) mData.get(position);
                 NoteViewHolder itemViewHolder = (NoteViewHolder) holder;
-                itemViewHolder.bind(noteItem, mListener);
+//                itemViewHolder.bind(noteItem, mListener);
                 itemViewHolder.mDimension.setText(noteItem.getDimension());
                 itemViewHolder.mPlace.setText(noteItem.getPlace());
                 itemViewHolder.mPrice.setText(String.format("£%.2f", noteItem.getPrice()));
                 if (noteItem.getPath() != null) {
-                    itemViewHolder.mThumbnail.setVisibility(View.VISIBLE);
+                    itemViewHolder.mThumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     Bitmap bmp = Performance
                             .decodeSampledBitmapFromFile(
                                     noteItem.getPath(),
                                     mContext.getResources().getInteger(R.integer.thumbnailWidth),
                                     mContext.getResources().getInteger(R.integer.thumbnailHeight));
                     itemViewHolder.mThumbnail.setImageBitmap(bmp);
-                } else {
-                    itemViewHolder.mThumbnail.setVisibility(View.GONE);
                 }
+
+                itemViewHolder.mEdit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int actionId = v.getId();
+                        if(mListener != null){
+                            mListener.onActionClick(noteItem, actionId);
+                        }
+                    }
+                });
+                itemViewHolder.mDetail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int actionId = v.getId();
+                        if(mListener != null){
+                            mListener.onActionClick(noteItem, actionId);
+                        }
+                    }
+                });
                 break;
         }
     }

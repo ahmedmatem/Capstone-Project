@@ -2,14 +2,13 @@ package com.example.android.pfpnotes;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.pfpnotes.asynctasks.UploadAsyncTask;
 import com.example.android.pfpnotes.asynctasks.UploadInfoAsyncTask;
@@ -32,6 +31,9 @@ public class UploadActivity extends AppCompatActivity
 
     public static final int SIGN_IN_REQUEST_CODE = 20;
 
+    private ConstraintLayout mLayoutUpload;
+
+    private TextView mNoUploadTextView;
     private TextView mNotesToUploadInfo;
     private TextView mImagesToUploadInfo;
 
@@ -47,12 +49,14 @@ public class UploadActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
+        mLayoutUpload = (ConstraintLayout) findViewById(R.id.layout_upload);
+        mNoUploadTextView = (TextView) findViewById(R.id.tv_no_upload);
         mNotesToUploadInfo = (TextView) findViewById(R.id.tv_notes_to_upload);
         mImagesToUploadInfo = (TextView) findViewById(R.id.tv_images_to_upload);
         mNotesProgressBar = (ProgressBar) findViewById(R.id.pr_bar_notes);
         mImagesProgressBar = (ProgressBar) findViewById(R.id.pr_bar_images);
 
-        Button uploadButton = (Button) findViewById(R.id.btn_upload);
+        Button uploadButton = (Button) findViewById(R.id.btn_detail);
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,8 +88,12 @@ public class UploadActivity extends AppCompatActivity
     @Override
     public void onUploadDataReceived(Map<Note, List<Image>> data) {
         if (data == null) {
-            //TODO: update UI for no data to upload
+            mLayoutUpload.setVisibility(View.GONE);
+            mNoUploadTextView.setVisibility(View.VISIBLE);
             return;
+        } else {
+            mLayoutUpload.setVisibility(View.VISIBLE);
+            mNoUploadTextView.setVisibility(View.GONE);
         }
 
         mData = data;
