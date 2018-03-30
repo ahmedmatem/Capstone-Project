@@ -13,7 +13,7 @@ import com.example.android.pfpnotes.R;
  */
 
 public class NoteViewHolder extends RecyclerView.ViewHolder {
-    ConstraintLayout mActionLayout;
+    private ConstraintLayout mActionLayout;
 
     public ImageView mThumbnail;
     public TextView mPlace;
@@ -25,12 +25,12 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
 
     public NoteViewHolder(View itemView) {
         super(itemView);
-        mActionLayout = (ConstraintLayout) itemView.findViewById(R.id.action_layout);
-        mThumbnail = (ImageView) itemView.findViewById(R.id.iv_thumb);
-        mPlace = (TextView) itemView.findViewById(R.id.tv_place);
-        mDimension = (TextView) itemView.findViewById(R.id.tv_dimension);
-        mPrice = (TextView) itemView.findViewById(R.id.tv_price);
-        mEdit = (ImageView) itemView.findViewById(R.id.btn_edit);
-        mDetail = (ImageView) itemView.findViewById(R.id.btn_upload);
+        mActionLayout = itemView.findViewById(R.id.action_layout);
+        mThumbnail = itemView.findViewById(R.id.iv_thumb);
+        mPlace = itemView.findViewById(R.id.tv_place);
+        mDimension = itemView.findViewById(R.id.tv_dimension);
+        mPrice =  itemView.findViewById(R.id.tv_price);
+        mEdit = itemView.findViewById(R.id.btn_edit);
+        mDetail = itemView.findViewById(R.id.btn_detail);
     }
 }

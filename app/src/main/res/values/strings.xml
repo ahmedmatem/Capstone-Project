@@ -62,4 +62,8 @@
 
     <string name="progress_max_100">100</string>
     <string name="no_items_to_upload">No items to upload.</string>
+    <string name="title_activity_detail">Detail</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="notes_size_text">Notes: %1$d</string>
+    <string name="images_size_text">Images: %1$d</string>
 </resources>

@@ -14,7 +14,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.android.pfpnotes.data.DbContract;
 import com.example.android.pfpnotes.data.adapters.NoteAdapter;
@@ -87,7 +86,7 @@ public class NoteListFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_note_list, container, false);
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_notes);
+        mRecyclerView = view.findViewById(R.id.rv_notes);
         mRecyclerView.setAdapter(mAdapter);
 
         return view;
@@ -144,8 +143,8 @@ public class NoteListFragment extends Fragment
             case R.id.btn_edit:
                 startNoteEditActivity(item);
                 break;
-            case R.id.btn_upload:
-                Toast.makeText(getContext(), "Detail", Toast.LENGTH_LONG).show();
+            case R.id.btn_detail:
+                startDetailActivity(item);
                 break;
         }
     }
@@ -171,6 +170,11 @@ public class NoteListFragment extends Fragment
 
         Intent intent = new Intent(getContext(), NoteEditActivity.class);
         intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    private void startDetailActivity(NoteItem item) {
+        Intent intent = new Intent(getContext(), DetailActivity.class);
         startActivity(intent);
     }
 

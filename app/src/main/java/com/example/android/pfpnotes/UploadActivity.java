@@ -49,14 +49,14 @@ public class UploadActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
-        mLayoutUpload = (ConstraintLayout) findViewById(R.id.layout_upload);
-        mNoUploadTextView = (TextView) findViewById(R.id.tv_no_upload);
-        mNotesToUploadInfo = (TextView) findViewById(R.id.tv_notes_to_upload);
-        mImagesToUploadInfo = (TextView) findViewById(R.id.tv_images_to_upload);
-        mNotesProgressBar = (ProgressBar) findViewById(R.id.pr_bar_notes);
-        mImagesProgressBar = (ProgressBar) findViewById(R.id.pr_bar_images);
+        mLayoutUpload = findViewById(R.id.layout_upload);
+        mNoUploadTextView = findViewById(R.id.tv_no_upload);
+        mNotesToUploadInfo = findViewById(R.id.tv_notes_to_upload);
+        mImagesToUploadInfo = findViewById(R.id.tv_images_to_upload);
+        mNotesProgressBar = findViewById(R.id.pr_bar_notes);
+        mImagesProgressBar = findViewById(R.id.pr_bar_images);
 
-        Button uploadButton = (Button) findViewById(R.id.btn_upload);
+        Button uploadButton = findViewById(R.id.btn_detail);
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,9 +100,11 @@ public class UploadActivity extends AppCompatActivity
         mData = data;
         mImagesCount = getImagesCount();
         mNotesCount = data.size();
-        mNotesToUploadInfo.setText("Notes: " + data.size());
+        mNotesToUploadInfo.setText(String.format(
+                getString(R.string.notes_size_text), data.size()));
         int imagesCount = getImagesCount();
-        mImagesToUploadInfo.setText("Images: " + imagesCount);
+        mImagesToUploadInfo.setText(String.format(
+                getString(R.string.images_size_text), imagesCount));
     }
 
     private int getImagesCount() {
