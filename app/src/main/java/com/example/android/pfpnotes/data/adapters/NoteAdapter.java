@@ -115,7 +115,6 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case Item.TYPE_NOTE:
                 final NoteItem noteItem = (NoteItem) mData.get(position);
                 NoteViewHolder itemViewHolder = (NoteViewHolder) holder;
-//                itemViewHolder.bind(noteItem, mListener);
                 itemViewHolder.mDimension.setText(noteItem.getDimension());
                 itemViewHolder.mPlace.setText(noteItem.getPlace());
                 itemViewHolder.mPrice.setText(String.format("£%.2f", noteItem.getPrice()));
@@ -129,20 +128,26 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     itemViewHolder.mThumbnail.setImageBitmap(bmp);
                 }
 
-                itemViewHolder.mEdit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int actionId = v.getId();
-                        if(mListener != null){
-                            mListener.onActionClick(noteItem, actionId);
+                if(noteItem.getNoteStatus() == DbContract.NoteEntry.Status.DONE){
+                    itemViewHolder.mEdit.setVisibility(View.GONE);
+                } else {
+                    itemViewHolder.mEdit.setVisibility(View.VISIBLE);
+                    itemViewHolder.mEdit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            int actionId = v.getId();
+                            if (mListener != null) {
+                                mListener.onActionClick(noteItem, actionId);
+                            }
                         }
-                    }
-                });
+                    });
+                }
+                
                 itemViewHolder.mDetail.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         int actionId = v.getId();
-                        if(mListener != null){
+                        if (mListener != null) {
                             mListener.onActionClick(noteItem, actionId);
                         }
                     }
