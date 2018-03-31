@@ -1,5 +1,6 @@
 package com.example.android.pfpnotes.data.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -23,6 +24,8 @@ import com.example.android.pfpnotes.models.NoteItem;
 import java.io.File;
 import java.util.ArrayList;
 
+import static java.lang.String.*;
+
 /**
  * Created by ahmed on 13/03/2018.
  */
@@ -35,7 +38,7 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener {
-//        void onItemClick(NoteItem item);
+        //        void onItemClick(NoteItem item);
         void onActionClick(NoteItem item, int actionId);
     }
 
@@ -102,6 +105,7 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return viewHolder;
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         int viewType = getItemViewType(position);
@@ -110,14 +114,14 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 HeaderItem headerItem = (HeaderItem) mData.get(position);
                 NoteListHeaderViewHolder headerViewHolder = (NoteListHeaderViewHolder) holder;
                 headerViewHolder.mDate.setText(headerItem.getDate());
-                headerViewHolder.mTotal.setText(String.format("£%.2f", headerItem.getTotalPrice()));
+                headerViewHolder.mTotal.setText(format("£%.2f", headerItem.getTotalPrice()));
                 break;
             case Item.TYPE_NOTE:
                 final NoteItem noteItem = (NoteItem) mData.get(position);
                 NoteViewHolder itemViewHolder = (NoteViewHolder) holder;
                 itemViewHolder.mDimension.setText(noteItem.getDimension());
                 itemViewHolder.mPlace.setText(noteItem.getPlace());
-                itemViewHolder.mPrice.setText(String.format("£%.2f", noteItem.getPrice()));
+                itemViewHolder.mPrice.setText(format("£%.2f", noteItem.getPrice()));
                 if (noteItem.getPath() != null) {
                     itemViewHolder.mThumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     Bitmap bmp = Performance
@@ -128,7 +132,7 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     itemViewHolder.mThumbnail.setImageBitmap(bmp);
                 }
 
-                if(noteItem.getNoteStatus() == DbContract.NoteEntry.Status.DONE){
+                if (noteItem.getNoteStatus() == DbContract.NoteEntry.Status.DONE) {
                     itemViewHolder.mEdit.setVisibility(View.GONE);
                 } else {
                     itemViewHolder.mEdit.setVisibility(View.VISIBLE);
@@ -142,7 +146,7 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         }
                     });
                 }
-                
+
                 itemViewHolder.mDetail.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -154,6 +158,17 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 });
                 break;
         }
+    }
+
+    @Override
+    public long getItemId(int position) {
+        NoteItem noteItem;
+        try {
+            noteItem = (NoteItem) mData.get(position);
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Selected item can not be cast to class NoteItem");
+        }
+        return noteItem != null ? noteItem.getId() : 0;
     }
 
     @Override

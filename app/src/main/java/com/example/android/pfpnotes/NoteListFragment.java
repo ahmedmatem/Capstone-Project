@@ -38,8 +38,8 @@ public class NoteListFragment extends Fragment
         NoteAdapter.OnItemClickListener {
     private static final String TAG = "NoteListFragment";
     private static final int NOTE_LOADER_ID = 5;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    public static final String NOTE_ID = "note_id";
+
     public static final String ARG_NOTE = "note";
 
     private NoteModel mNote;
@@ -64,19 +64,12 @@ public class NoteListFragment extends Fragment
     // TODO: Rename and change types and number of parameters
     public static NoteListFragment newInstance(LoaderManager loaderManager) {
         mLoaderManager = loaderManager;
-        NoteListFragment fragment = new NoteListFragment();
-//        Bundle args = new Bundle();
-//        fragment.setArguments(args);
-        return fragment;
+        return new NoteListFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-        }
-
         mLoaderManager.initLoader(NOTE_LOADER_ID, null, this);
     }
 
@@ -132,11 +125,6 @@ public class NoteListFragment extends Fragment
         mRecyclerView.setAdapter(null);
     }
 
-//    @Override
-//    public void onItemClick(NoteItem item) {
-//
-//    }
-
     @Override
     public void onActionClick(NoteItem item, int actionId) {
         switch (actionId){
@@ -175,6 +163,9 @@ public class NoteListFragment extends Fragment
 
     private void startDetailActivity(NoteItem item) {
         Intent intent = new Intent(getContext(), DetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(NOTE_ID, item.getId());
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
