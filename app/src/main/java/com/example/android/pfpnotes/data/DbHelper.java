@@ -14,7 +14,7 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "pfp.db";
     private static final int DATABASE_VERSION = 15;
 
-    private DbHelper(Context context) {
+    public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
