@@ -78,12 +78,15 @@ public class NoteAddEditFragment extends Fragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             Bundle args = getArguments();
-            mNote = (NoteModel) args.getParcelable(ARG_NOTE);
+            mNote = args.getParcelable(ARG_NOTE);
         }
-        mImageAdapter = new ImageAdapter(mNote.getPaths(),
-                getContext(),
-                getLayoutInflater(),
-                this);
+        if(mNote != null) {
+            mImageAdapter = new ImageAdapter(mNote.getPaths(),
+                    getContext(),
+                    getLayoutInflater(),
+                    this);
+        }
+
         mLoaderManager.initLoader(PLACE_LOADER_ID, null, this);
     }
 
@@ -104,7 +107,7 @@ public class NoteAddEditFragment extends Fragment
                     TextView place = (TextView) view;
                     place.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
                     place.setLayoutParams(new ViewGroup
-                            .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 140));
+                            .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                     place.setBackground(getResources()
                             .getDrawable(R.drawable.bg_border));
                     if (mNote.getShortPlaceName() != null &&
@@ -120,7 +123,7 @@ public class NoteAddEditFragment extends Fragment
             }
         });
 
-        GridView gv_places = (GridView) view.findViewById(R.id.gv_places);
+        GridView gv_places = view.findViewById(R.id.gv_places);
         gv_places.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -140,12 +143,12 @@ public class NoteAddEditFragment extends Fragment
         });
         gv_places.setAdapter(mPlaceAdapter);
 
-        tvDimension = (TextView) view.findViewById(R.id.tv_dimens_value);
+        tvDimension = view.findViewById(R.id.tv_dimens_value);
         if (mNote.getDimensionText() != null) {
             tvDimension.setText(mNote.getDimensionText());
         }
 
-        GridView gv_thumbs = (GridView) view.findViewById(R.id.gv_thumbnails);
+        GridView gv_thumbs = view.findViewById(R.id.gv_thumbnails);
         gv_thumbs.setAdapter(mImageAdapter);
 
         return view;

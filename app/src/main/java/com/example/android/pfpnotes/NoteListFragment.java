@@ -15,10 +15,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.android.pfpnotes.asynctasks.DetailAsyncTask;
 import com.example.android.pfpnotes.data.DbContract;
 import com.example.android.pfpnotes.data.adapters.NoteAdapter;
 import com.example.android.pfpnotes.data.daos.ImageDAO;
 import com.example.android.pfpnotes.data.daos.PlaceDAO;
+import com.example.android.pfpnotes.models.Item;
 import com.example.android.pfpnotes.models.NoteItem;
 import com.example.android.pfpnotes.models.NoteModel;
 
@@ -28,7 +30,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link NoteListFragment.OnFragmentInteractionListener} interface
+ * {@link NoteListListener} interface
  * to handle interaction events.
  * Use the {@link NoteListFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -44,24 +46,19 @@ public class NoteListFragment extends Fragment
 
     private NoteModel mNote;
 
-    private OnFragmentInteractionListener mListener;
+    private NoteListListener mListener;
 
     private static LoaderManager mLoaderManager;
 
     private RecyclerView mRecyclerView;
     private NoteAdapter mAdapter;
 
+    private static int mNoteId;
+
     public NoteListFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment NoteListFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static NoteListFragment newInstance(LoaderManager loaderManager) {
         mLoaderManager = loaderManager;
         return new NoteListFragment();
@@ -88,8 +85,8 @@ public class NoteListFragment extends Fragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof NoteListListener) {
+            mListener = (NoteListListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnKeyboardInteractionListener");
@@ -118,6 +115,11 @@ public class NoteListFragment extends Fragment
         mRecyclerView.setAdapter(mAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
+        if(getResources().getBoolean(R.bool.twoPane)){
+            if(mListener != null){
+                mListener.onNotesLoadFinished();
+            }
+        }
     }
 
     @Override
@@ -132,6 +134,12 @@ public class NoteListFragment extends Fragment
                 startNoteEditActivity(item);
                 break;
             case R.id.btn_detail:
+                if(getResources().getBoolean(R.bool.twoPane)){
+                    new DetailAsyncTask((DetailAsyncTask.DetailListener) getContext(), item.getId())
+                            .execute(getContext());
+                    break;
+                }
+                
                 startDetailActivity(item);
                 break;
         }
@@ -179,8 +187,12 @@ public class NoteListFragment extends Fragment
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface NoteListListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onNotesLoadFinished();
+    }
+
+    public NoteAdapter getAdapter() {
+        return mAdapter;
     }
 }

@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.pfpnotes.data.DbContract;
@@ -15,12 +18,13 @@ import com.example.android.pfpnotes.models.Image;
 import com.example.android.pfpnotes.models.Note;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link DetailFragment.OnFragmentInteractionListener} interface
+ * {@link OnDetailFragmentListener} interface
  * to handle interaction events.
  * Use the {@link DetailFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -28,7 +32,7 @@ import java.util.List;
 public class DetailFragment extends Fragment {
     public static final String ARG_NOTE_DETAIL = "note_detail";
 
-    private OnFragmentInteractionListener mListener;
+    private OnDetailFragmentListener mListener;
 
     private Detail mDetail;
 
@@ -45,6 +49,15 @@ public class DetailFragment extends Fragment {
         args.putParcelable(ARG_NOTE_DETAIL, detail);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null) {
+            mDetail = args.getParcelable(ARG_NOTE_DETAIL);
+        }
     }
 
     @Override
@@ -68,27 +81,22 @@ public class DetailFragment extends Fragment {
         uploadStatus.setText(note.getStatus() == DbContract.NoteEntry.Status.DONE ?
                 "Uploaded" : "Not uploaded");
 
+        GridView detailImagesGridView = rootView.findViewById(R.id.gv_detail_images);
+        DetailGridAdapter adapter;
+        adapter = new DetailGridAdapter(getLayoutInflater(), mDetail.getData());
+        detailImagesGridView.setAdapter(adapter);
+
         return rootView;
-    }
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Bundle args = getArguments();
-        if (args != null) {
-            mDetail = args.getParcelable(ARG_NOTE_DETAIL);
-        }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnDetailFragmentListener) {
+            mListener = (OnDetailFragmentListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement NoteListListener");
         }
     }
 
@@ -108,7 +116,70 @@ public class DetailFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnDetailFragmentListener {
         void onFragmentInteraction(Uri uri);
+    }
+
+    public class DetailGridAdapter extends BaseAdapter {
+        private LayoutInflater mLayoutInflater;
+        private Map.Entry<Note, List<Image>> mNoteListEntry;
+
+        public DetailGridAdapter(LayoutInflater layoutInflater,
+                                 Map.Entry<Note, List<Image>> noteListEntry) {
+            mLayoutInflater = layoutInflater;
+            mNoteListEntry = noteListEntry;
+        }
+
+        @Override
+        public int getCount() {
+            if (mNoteListEntry != null && mNoteListEntry.getValue() != null) {
+                return mNoteListEntry.getValue().size();
+            }
+            return 0;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            if (mNoteListEntry != null && mNoteListEntry.getValue() != null) {
+                return mNoteListEntry.getValue().get(position).getPath();
+            }
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ImageViewHolder imageViewHolder;
+            if (convertView == null) {
+                convertView = mLayoutInflater.inflate(R.layout.detail_images_grid_item,
+                        parent, false);
+                imageViewHolder = new ImageViewHolder(convertView);
+                convertView.setTag(imageViewHolder);
+            } else {
+                imageViewHolder = (ImageViewHolder) convertView.getTag();
+            }
+
+            if (mNoteListEntry != null && mNoteListEntry.getValue() != null) {
+                List<Image> paths = mNoteListEntry.getValue();
+                String path = paths.get(position).getPath();
+                if (path != null) {
+                    imageViewHolder.mImage.setImageURI(Uri.parse(path));
+                }
+            }
+
+            return convertView;
+        }
+    }
+
+    public class ImageViewHolder {
+        ImageView mImage;
+
+        public ImageViewHolder(View convertView) {
+            mImage = convertView.findViewById(R.id.iv_detail_image);
+        }
     }
 }

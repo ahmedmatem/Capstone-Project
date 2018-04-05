@@ -45,4 +45,8 @@ public class DetailPagerAdapter extends FragmentPagerAdapter {
         mData = data;
         notifyDataSetChanged();
     }
+
+    public Map<Note, List<Image>> getData() {
+        return mData;
+    }
 }

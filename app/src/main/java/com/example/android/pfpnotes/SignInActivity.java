@@ -16,6 +16,7 @@ import com.example.android.pfpnotes.data.RealtimeData;
 import com.example.android.pfpnotes.net.Connection;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,37 +35,39 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
+        mAuth = FirebaseAuth.getInstance();
+
         mBundle = getIntent().getExtras();
 
         mConnection = new Connection(this);
-        if(!mConnection.isConnected()){
+        if (!mConnection.isConnected()) {
             Intent intent =
                     new Intent(SignInActivity.this, NoteListActivity.class);
             startActivity(intent);
             finish();
         }
 
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if(user != null) {
-            updateUI(user);
-        }
+        final EditText username = findViewById(R.id.username);
+        final EditText password = findViewById(R.id.password);
+        CheckBox stayIn = findViewById(R.id.stay_in);
 
-        final EditText username = (EditText) findViewById(R.id.username);
-        final EditText password = (EditText) findViewById(R.id.password);
-        CheckBox stayIn = (CheckBox) findViewById(R.id.stay_in);
-
-        Button signIn = (Button) findViewById(R.id.btn_sign_in);
+        Button signIn = findViewById(R.id.btn_sign_in);
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: show progressbar
                 String email = username.getText().toString();
                 String pass = password.getText().toString();
                 validate(email, pass);
                 signIn(email, pass);
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = mAuth.getCurrentUser();
+        updateUI(user);
     }
 
     private void validate(String email, String pass) {
@@ -92,8 +95,8 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser currentUser) {
-        if(currentUser != null){
-            if(mConnection.isConnected()) {
+        if (currentUser != null) {
+            if (mConnection.isConnected()) {
                 new RealtimeData(SignInActivity.this).read();
             }
 
@@ -101,15 +104,17 @@ public class SignInActivity extends AppCompatActivity {
             mPreferences.writeUserEmail(currentUser.getEmail());
             mPreferences.setSignedIn(true);
 
-            if(mBundle != null && mBundle.containsKey(SOURCE_ACTIVITY_NAME)) {
+            if (mBundle != null && mBundle.containsKey(SOURCE_ACTIVITY_NAME)) {
                 String sourceActivityName = mBundle.getString(SOURCE_ACTIVITY_NAME);
-                switch (sourceActivityName){
-                    case "UploadActivity":
-                        Intent intent = new Intent(this, UploadActivity.class);
-                        setResult(RESULT_OK, intent);
-                        finish();
-                        break;
+                if(sourceActivityName != null) {
+                    switch (sourceActivityName) {
+                        case "UploadActivity":
+                            Intent intent = new Intent(this, UploadActivity.class);
+                            setResult(RESULT_OK, intent);
+                            finish();
+                            break;
                         default:
+                    }
                 }
             } else {
                 Intent intent = new Intent(this, NoteListActivity.class);

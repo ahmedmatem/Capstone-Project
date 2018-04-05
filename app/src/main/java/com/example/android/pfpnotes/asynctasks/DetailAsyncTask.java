@@ -18,11 +18,15 @@ import java.util.Map;
 public class DetailAsyncTask extends AsyncTask<Context, Void, Map<Note, List<Image>>> {
     private DetailListener mListener;
     public interface DetailListener{
-        void onDetailLoadFinished(Map<Note, List<Image>> data);
+        void onDetailLoadFinished(Map<Note, List<Image>> data, int currentItem);
     }
 
-    public DetailAsyncTask(DetailListener listener) {
+    private int mCurrentItem;
+    private int mCurrentItemId;
+
+    public DetailAsyncTask(DetailListener listener, int currentItemId) {
         mListener = listener;
+        mCurrentItemId = currentItemId;
     }
 
     @Override
@@ -89,13 +93,16 @@ public class DetailAsyncTask extends AsyncTask<Context, Void, Map<Note, List<Ima
             }
             // put last images for last noteId
             noteImages.put(noteId, images);
-
             cursor.close();
         }
 
         Map<Note, List<Image>> data = new HashMap<>();
         List<Image> imageList;
         for(Note note : notes){
+
+            if(note.getId() == mCurrentItemId){
+                mCurrentItem = note.getPosition();
+            }
             imageList = noteImages.get(note.getId());
             data.put(note, imageList);
         }
@@ -106,7 +113,7 @@ public class DetailAsyncTask extends AsyncTask<Context, Void, Map<Note, List<Ima
     @Override
     protected void onPostExecute(Map<Note, List<Image>> data) {
         if(mListener != null){
-            mListener.onDetailLoadFinished(data);
+            mListener.onDetailLoadFinished(data, mCurrentItem);
         }
     }
 }

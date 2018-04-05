@@ -11,10 +11,10 @@ import com.example.android.pfpnotes.data.DbContract.NoteEntry.Status;
  */
 
 public class DbHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "pfp.db";
-    public static final int DATABASE_VERSION = 14;
+    private static final String DATABASE_NAME = "pfp.db";
+    private static final int DATABASE_VERSION = 15;
 
-    public DbHelper(Context context) {
+    private DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -64,10 +64,10 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//        db.execSQL("DROP TABLE IF EXISTS " + DbContract.PriceEntry.TABLE_NAME);
-//        db.execSQL("DROP TABLE IF EXISTS " + DbContract.PlaceEntry.TABLE_NAME);
-//        db.execSQL("DROP TABLE IF EXISTS " + DbContract.NoteEntry.TABLE_NAME);
-//        db.execSQL("DROP TABLE IF EXISTS " + DbContract.ImageEntry.TABLE_NAME);
-//        onCreate(db);
+        db.execSQL("DROP TABLE IF EXISTS " + DbContract.PriceEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + DbContract.PlaceEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + DbContract.NoteEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + DbContract.ImageEntry.TABLE_NAME);
+        onCreate(db);
     }
 }

@@ -43,7 +43,8 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public NoteAdapter(OnItemClickListener listener,
-                       Cursor cursor, Context context, LayoutInflater layoutInflater) {
+                       Cursor cursor, Context context,
+                       LayoutInflater layoutInflater) {
         mListener = listener;
         mCursor = cursor;
         mContext = context;
@@ -179,5 +180,9 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         return mData.get(position).getType();
+    }
+
+    public ArrayList<Item> getData() {
+        return mData;
     }
 }

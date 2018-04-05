@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -12,30 +13,47 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.android.pfpnotes.asynctasks.DetailAsyncTask;
 import com.example.android.pfpnotes.data.Preferences;
+import com.example.android.pfpnotes.data.adapters.DetailPagerAdapter;
+import com.example.android.pfpnotes.models.Image;
+import com.example.android.pfpnotes.models.Item;
+import com.example.android.pfpnotes.models.Note;
+import com.example.android.pfpnotes.models.NoteItem;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class NoteListActivity extends AppCompatActivity
-        implements NoteListFragment.OnFragmentInteractionListener {
+        implements NoteListFragment.NoteListListener,
+        DetailAsyncTask.DetailListener,
+        DetailFragment.OnDetailFragmentListener{
     private MenuItem mSignInMenuItem;
     private MenuItem mSignOutMenuItem;
     private NoteListFragment mNoteListFragment;
+
+    // two pane properties
+    private DetailPagerAdapter mPagerAdapter;
+    private ViewPager mDetailViewPager;
+    private int mCurrentIndex = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             mNoteListFragment = NoteListFragment.newInstance(getSupportLoaderManager());
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.note_list_fragment_container, mNoteListFragment)
                     .commit();
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,6 +61,13 @@ public class NoteListActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
+
+        // two pane activity
+        if (getResources().getBoolean(R.bool.twoPane)) {
+            mPagerAdapter = new DetailPagerAdapter(getSupportFragmentManager(), null);
+            mDetailViewPager = findViewById(R.id.note_detail_view_pager);
+            mDetailViewPager.setAdapter(mPagerAdapter);
+        }
     }
 
     @Override
@@ -97,7 +122,35 @@ public class NoteListActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onNotesLoadFinished() {
+        if (mNoteListFragment.getAdapter() != null) {
+            ArrayList<Item> items = mNoteListFragment.getAdapter().getData();
+            if(items != null){
+                for (Item item : items) {
+                    if(item instanceof NoteItem){
+                        NoteItem noteItem = (NoteItem) item;
+                        int noteId = ((NoteItem) item).getId();
+                        // load detail data asynchronously
+                        new DetailAsyncTask(this, noteId).execute(this);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
+    @Override
+    public void onDetailLoadFinished(Map<Note, List<Image>> data, int currentItem) {
+        mPagerAdapter.setData(data);
+        if (mCurrentIndex != -1) {
+            mDetailViewPager.setCurrentItem(mCurrentIndex);
+        } else {
+            mDetailViewPager.setCurrentItem(currentItem);
+        }
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        // from detail fragment listener
     }
 }
