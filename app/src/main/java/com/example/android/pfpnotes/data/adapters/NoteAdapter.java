@@ -4,13 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 
 import com.example.android.pfpnotes.R;
@@ -21,7 +18,6 @@ import com.example.android.pfpnotes.models.HeaderItem;
 import com.example.android.pfpnotes.models.Item;
 import com.example.android.pfpnotes.models.NoteItem;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import static java.lang.String.*;
@@ -35,14 +31,13 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private LayoutInflater mLayoutInflater;
     private ArrayList<Item> mData;
-    private OnItemClickListener mListener;
+    private NoteClickListener mListener;
 
-    public interface OnItemClickListener {
-        //        void onItemClick(NoteItem item);
+    public interface NoteClickListener {
         void onActionClick(NoteItem item, int actionId);
     }
 
-    public NoteAdapter(OnItemClickListener listener,
+    public NoteAdapter(NoteClickListener listener,
                        Cursor cursor, Context context,
                        LayoutInflater layoutInflater) {
         mListener = listener;
@@ -59,6 +54,8 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             double totalPerDay = 0d;
             String date = "";
             String currentDate;
+            int positionInDetail = 0;
+            int positionInMaster = 0;
             while (mCursor.moveToNext()) {
                 currentDate = mCursor.getString(
                         mCursor.getColumnIndex(DbContract.NoteEntry.COLUMN_DATE));
@@ -69,14 +66,17 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     }
 
                     HeaderItem item = new HeaderItem(currentDate);
+                    positionInMaster++;
                     mData.add(item);
 
                     headerPosition = mData.size() - 1;
                     totalPerDay = 0d;
                     date = currentDate;
                 }
-                NoteItem item = new NoteItem(mCursor);
-                mData.add(item);
+                NoteItem noteItem = new NoteItem(mCursor);
+                noteItem.setPositionInMaster(positionInMaster++);
+                noteItem.setPositionInDetail(positionInDetail++);
+                mData.add(noteItem);
                 String totalPerDayAsString = mCursor.getString(
                         mCursor.getColumnIndex(DbContract.NoteEntry.COLUMN_PRICE));
                 totalPerDay += Double.valueOf(totalPerDayAsString);

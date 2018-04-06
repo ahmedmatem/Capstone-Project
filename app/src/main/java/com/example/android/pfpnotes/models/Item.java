@@ -8,7 +8,5 @@ public abstract class Item {
     public static final int TYPE_HEADER = 1;
     public static final int TYPE_NOTE = 2;
 
-    public int mPosition;
-
     public abstract int getType();
 }

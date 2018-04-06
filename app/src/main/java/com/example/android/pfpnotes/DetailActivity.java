@@ -1,10 +1,12 @@
 package com.example.android.pfpnotes;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.example.android.pfpnotes.asynctasks.DetailAsyncTask;
 import com.example.android.pfpnotes.data.adapters.DetailPagerAdapter;
@@ -20,6 +22,7 @@ public class DetailActivity extends AppCompatActivity
         implements DetailFragment.OnDetailFragmentListener,
         DetailAsyncTask.DetailListener {
     public static final String PAGER_CURRENT_INDEX = "pager_position";
+    public static final String POSITION_IN_DETAIL = "position_in_back";
 
     private static DetailPagerAdapter mDetailPagerAdapter;
 
@@ -57,6 +60,24 @@ public class DetailActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(PAGER_CURRENT_INDEX, mViewPager.getCurrentItem());
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                backToNoteListActivity(mViewPager.getCurrentItem());
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void backToNoteListActivity(int currentItem) {
+        Intent intent = new Intent(this, NoteListActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(POSITION_IN_DETAIL, currentItem);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override

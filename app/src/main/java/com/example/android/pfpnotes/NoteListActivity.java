@@ -7,7 +7,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,10 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.android.pfpnotes.DetailActivity.POSITION_IN_DETAIL;
+
 public class NoteListActivity extends AppCompatActivity
         implements NoteListFragment.NoteListListener,
         DetailAsyncTask.DetailListener,
-        DetailFragment.OnDetailFragmentListener{
+        DetailFragment.OnDetailFragmentListener {
     private MenuItem mSignInMenuItem;
     private MenuItem mSignOutMenuItem;
     private NoteListFragment mNoteListFragment;
@@ -39,6 +40,8 @@ public class NoteListActivity extends AppCompatActivity
     private ViewPager mDetailViewPager;
     private int mCurrentIndex = -1;
 
+    private int mPositionInDetail = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +49,15 @@ public class NoteListActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null && bundle.containsKey(POSITION_IN_DETAIL)) {
+            mPositionInDetail = bundle.getInt(POSITION_IN_DETAIL);
+        }
+
         if (savedInstanceState == null) {
-            mNoteListFragment = NoteListFragment.newInstance(getSupportLoaderManager());
+            mNoteListFragment = NoteListFragment.newInstance(getSupportLoaderManager(),
+                    mPositionInDetail);
+
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.note_list_fragment_container, mNoteListFragment)
                     .commit();
@@ -123,16 +133,19 @@ public class NoteListActivity extends AppCompatActivity
 
     @Override
     public void onNotesLoadFinished() {
-        if (mNoteListFragment.getAdapter() != null) {
-            ArrayList<Item> items = mNoteListFragment.getAdapter().getData();
-            if(items != null){
-                for (Item item : items) {
-                    if(item instanceof NoteItem){
-                        NoteItem noteItem = (NoteItem) item;
-                        int noteId = ((NoteItem) item).getId();
-                        // load detail data asynchronously
-                        new DetailAsyncTask(this, noteId).execute(this);
-                        break;
+        // two pane mode
+        if (getResources().getBoolean(R.bool.twoPane)) {
+            if (mNoteListFragment.getAdapter() != null) {
+                ArrayList<Item> items = mNoteListFragment.getAdapter().getData();
+                if (items != null) {
+                    for (Item item : items) {
+                        if (item instanceof NoteItem) {
+                            NoteItem noteItem = (NoteItem) item;
+                            int noteId = ((NoteItem) item).getId();
+                            // load detail data asynchronously
+                            new DetailAsyncTask(this, noteId).execute(this);
+                            break;
+                        }
                     }
                 }
             }
@@ -141,11 +154,14 @@ public class NoteListActivity extends AppCompatActivity
 
     @Override
     public void onDetailLoadFinished(Map<Note, List<Image>> data, int currentItem) {
-        mPagerAdapter.setData(data);
-        if (mCurrentIndex != -1) {
-            mDetailViewPager.setCurrentItem(mCurrentIndex);
-        } else {
-            mDetailViewPager.setCurrentItem(currentItem);
+        // two pane mode
+        if (getResources().getBoolean(R.bool.twoPane)) {
+            mPagerAdapter.setData(data);
+            if (mCurrentIndex != -1) {
+                mDetailViewPager.setCurrentItem(mCurrentIndex);
+            } else {
+                mDetailViewPager.setCurrentItem(currentItem);
+            }
         }
     }
 

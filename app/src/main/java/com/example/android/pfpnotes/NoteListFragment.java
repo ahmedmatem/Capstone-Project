@@ -3,7 +3,6 @@ package com.example.android.pfpnotes;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -11,6 +10,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +37,8 @@ import java.util.ArrayList;
  */
 public class NoteListFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor>,
-        NoteAdapter.OnItemClickListener {
-    private static final String TAG = "NoteListFragment";
+        NoteAdapter.NoteClickListener {
+    public static final String POSITION = "position";
     private static final int NOTE_LOADER_ID = 5;
     public static final String NOTE_ID = "note_id";
 
@@ -53,20 +53,27 @@ public class NoteListFragment extends Fragment
     private RecyclerView mRecyclerView;
     private NoteAdapter mAdapter;
 
-    private static int mNoteId;
+    private int mPositionInDetail;
 
     public NoteListFragment() {
         // Required empty public constructor
     }
 
-    public static NoteListFragment newInstance(LoaderManager loaderManager) {
+    public static NoteListFragment newInstance(LoaderManager loaderManager, int position) {
         mLoaderManager = loaderManager;
-        return new NoteListFragment();
+        NoteListFragment fragment = new NoteListFragment();
+        Bundle args = new Bundle();
+        args.putInt(POSITION, position);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        mPositionInDetail = args.getInt(POSITION);
+
         mLoaderManager.initLoader(NOTE_LOADER_ID, null, this);
     }
 
@@ -111,15 +118,34 @@ public class NoteListFragment extends Fragment
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mAdapter = new NoteAdapter(this, data, getContext(), getLayoutInflater());
         mRecyclerView.setAdapter(mAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
-        if(getResources().getBoolean(R.bool.twoPane)){
-            if(mListener != null){
+        int positionInMaster = getPositionInMaster(mAdapter.getData());
+        mRecyclerView.scrollToPosition(positionInMaster);
+
+        if (getResources().getBoolean(R.bool.twoPane)) {
+            if (mListener != null) {
                 mListener.onNotesLoadFinished();
             }
         }
+    }
+
+    private int getPositionInMaster(ArrayList<Item> data) {
+        if(data == null) {
+            return 0;
+        }
+        NoteItem currentItem;
+        for (Item item : data){
+            if(item instanceof NoteItem){
+                currentItem = (NoteItem) item;
+                if(currentItem.getPositionInDetail() == mPositionInDetail){
+                    return currentItem.getPositionInMaster();
+                }
+            }
+        }
+        return 0;
     }
 
     @Override
@@ -129,17 +155,17 @@ public class NoteListFragment extends Fragment
 
     @Override
     public void onActionClick(NoteItem item, int actionId) {
-        switch (actionId){
+        switch (actionId) {
             case R.id.btn_edit:
                 startNoteEditActivity(item);
                 break;
             case R.id.btn_detail:
-                if(getResources().getBoolean(R.bool.twoPane)){
+                if (getResources().getBoolean(R.bool.twoPane)) {
                     new DetailAsyncTask((DetailAsyncTask.DetailListener) getContext(), item.getId())
                             .execute(getContext());
                     break;
                 }
-                
+
                 startDetailActivity(item);
                 break;
         }
@@ -188,7 +214,6 @@ public class NoteListFragment extends Fragment
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface NoteListListener {
-        // TODO: Update argument type and name
         void onNotesLoadFinished();
     }
 

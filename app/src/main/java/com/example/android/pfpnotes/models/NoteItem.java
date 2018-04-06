@@ -15,10 +15,13 @@ public class NoteItem extends Item {
     private int mHeight;
     private int mLayers;
     private int mCopies;
+    private int mNoteStatus;
     private String mPlace;
     private String mDate;
     private String mPath;
-    private int mNoteStatus;
+
+    private int mPositionInDetail;
+    private int mPositionInMaster;
 
     public NoteItem(Cursor cursor) {
         mId = cursor.getInt(cursor
@@ -75,10 +78,10 @@ public class NoteItem extends Item {
     public String getDimension() {
         StringBuilder dimens = new StringBuilder(mWidth + Dimension.DELIMITER_SIGN + mHeight);
         if (mLayers > 1) {
-            dimens.append(Dimension.DELIMITER_SIGN + mLayers);
+            dimens.append(Dimension.DELIMITER_SIGN).append(mLayers);
         }
         if (mCopies > 1) {
-            dimens.append(Dimension.DELIMITER_SIGN + mCopies);
+            dimens.append(Dimension.DELIMITER_SIGN).append(mCopies);
         }
         return dimens.toString();
     }
@@ -98,5 +101,21 @@ public class NoteItem extends Item {
     @Override
     public int getType() {
         return Item.TYPE_NOTE;
+    }
+
+    public int getPositionInDetail() {
+        return mPositionInDetail;
+    }
+
+    public void setPositionInDetail(int positionInDetail) {
+        mPositionInDetail = positionInDetail;
+    }
+
+    public int getPositionInMaster() {
+        return mPositionInMaster;
+    }
+
+    public void setPositionInMaster(int positionInMaster) {
+        mPositionInMaster = positionInMaster;
     }
 }
