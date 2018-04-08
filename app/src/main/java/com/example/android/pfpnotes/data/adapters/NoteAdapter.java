@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -119,7 +120,7 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 break;
             case Item.TYPE_NOTE:
                 final NoteItem noteItem = (NoteItem) mData.get(position);
-                NoteViewHolder itemViewHolder = (NoteViewHolder) holder;
+                final NoteViewHolder itemViewHolder = (NoteViewHolder) holder;
                 itemViewHolder.mDimension.setText(noteItem.getDimension());
                 itemViewHolder.mPlace.setText(noteItem.getPlace());
                 itemViewHolder.mPrice.setText(format("£%.2f", noteItem.getPrice()));

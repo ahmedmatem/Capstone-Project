@@ -8,4 +8,7 @@
     <color name="backgroundColor">#ccc</color>
 
     <color name="transparent_white_bg">#AFFF</color>
+
+    <color name="text_color_light">#FFF</color>
+    <color name="text_color_light_secondary">#EEE</color>
 </resources>

@@ -140,7 +140,7 @@ public class NoteListFragment extends Fragment
         for (Item item : data){
             if(item instanceof NoteItem){
                 currentItem = (NoteItem) item;
-                if(currentItem.getPositionInDetail() == mPositionInDetail){
+                if(currentItem.getPositionInDetail() == (mPositionInDetail - 1)){
                     return currentItem.getPositionInMaster();
                 }
             }
@@ -161,12 +161,12 @@ public class NoteListFragment extends Fragment
                 break;
             case R.id.btn_detail:
                 if (getResources().getBoolean(R.bool.twoPane)) {
+                    // two pane mode
                     new DetailAsyncTask((DetailAsyncTask.DetailListener) getContext(), item.getId())
                             .execute(getContext());
-                    break;
+                } else {
+                    startDetailActivity(item);
                 }
-
-                startDetailActivity(item);
                 break;
         }
     }

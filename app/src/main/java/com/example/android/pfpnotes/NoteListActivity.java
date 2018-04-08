@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -72,7 +73,7 @@ public class NoteListActivity extends AppCompatActivity
             }
         });
 
-        // two pane activity
+        // two pane mode
         if (getResources().getBoolean(R.bool.twoPane)) {
             mPagerAdapter = new DetailPagerAdapter(getSupportFragmentManager(), null);
             mDetailViewPager = findViewById(R.id.note_detail_view_pager);

@@ -70,4 +70,6 @@
     <string name="dimension_text">Dimension</string>
 
     <string name="price_text">£%1$.2f</string>
+    <string name="add_widget">Add widget</string>
+    <string name="widget_info_text">%1$d holes\nexp. £%2$.2f</string>
 </resources>

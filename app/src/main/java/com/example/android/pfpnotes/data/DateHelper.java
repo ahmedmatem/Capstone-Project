@@ -8,9 +8,9 @@ import java.util.Calendar;
  */
 
 public class DateHelper {
-    public static final String DATE_DELIMITER = "/";
-    private static final String DATE_TIME_FORMAT = "yyyy/MM/dd hh:mm:ss";
-    public static final SimpleDateFormat sDateFormat = new SimpleDateFormat(DATE_TIME_FORMAT);
+    private static final String DATE_DELIMITER = "/";
+    private static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
+    private static final SimpleDateFormat sDateFormat = new SimpleDateFormat(DATE_TIME_FORMAT);
 
     public static String getCurrentDate(){
         Calendar calendar = Calendar.getInstance();
