@@ -50,7 +50,9 @@ public class PFPAppWidget extends AppWidgetProvider {
 
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.pfpapp_widget);
-//        views.setTextViewText(R.id.widget_tv_price, "£120");
+        views.setOnClickPendingIntent(R.id.widget_tv_price,
+                PendingIntent.getActivity(context, 0,
+                        new Intent(context, NoteListActivity.class), 0));
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
