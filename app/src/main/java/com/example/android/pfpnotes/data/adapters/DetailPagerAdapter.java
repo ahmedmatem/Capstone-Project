@@ -27,8 +27,7 @@ public class DetailPagerAdapter extends FragmentPagerAdapter {
         // getItem is called to instantiate the fragment for the given page.
         for (Map.Entry<Note,List<Image>> noteEntry : mData.entrySet()) {
             if (noteEntry.getKey().getPosition() == position) {
-                Detail detail = new Detail();
-                detail.setData(noteEntry);
+                Detail detail = new Detail(noteEntry);
                 return DetailFragment.newInstance(detail);
             }
         }

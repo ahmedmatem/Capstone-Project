@@ -1,6 +1,7 @@
 package com.example.android.pfpnotes;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.pfpnotes.common.Performance;
 import com.example.android.pfpnotes.data.DbContract;
 import com.example.android.pfpnotes.models.Detail;
 import com.example.android.pfpnotes.models.Image;
@@ -166,8 +168,10 @@ public class DetailFragment extends Fragment {
             if (mNoteListEntry != null && mNoteListEntry.getValue() != null) {
                 List<Image> paths = mNoteListEntry.getValue();
                 String path = paths.get(position).getPath();
+                Bitmap bitmap;
                 if (path != null) {
-                    imageViewHolder.mImage.setImageURI(Uri.parse(path));
+                    bitmap = Performance.decodeSampledBitmapFromFile(path, 200, 200);
+                    imageViewHolder.mImage.setImageBitmap(bitmap);
                 }
             }
 

@@ -12,6 +12,10 @@ public class Detail implements Parcelable {
     public Detail() {
     }
 
+    public Detail(Map.Entry<Note,List<Image>> data) {
+        mData = data;
+    }
+
     protected Detail(Parcel in) {
     }
 
