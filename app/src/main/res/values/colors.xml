@@ -11,4 +11,6 @@
 
     <color name="text_color_light">#FFF</color>
     <color name="text_color_light_secondary">#EEE</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

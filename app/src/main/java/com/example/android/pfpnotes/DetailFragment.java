@@ -1,10 +1,12 @@
 package com.example.android.pfpnotes;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.pfpnotes.common.Performance;
 import com.example.android.pfpnotes.data.DbContract;
@@ -19,8 +22,11 @@ import com.example.android.pfpnotes.models.Detail;
 import com.example.android.pfpnotes.models.Image;
 import com.example.android.pfpnotes.models.Note;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static com.example.android.pfpnotes.ImagePagerFullscreenActivity.IMAGE_PATHS;
 
 
 /**
@@ -172,10 +178,31 @@ public class DetailFragment extends Fragment {
                 if (path != null) {
                     bitmap = Performance.decodeSampledBitmapFromFile(path, 200, 200);
                     imageViewHolder.mImage.setImageBitmap(bitmap);
+                    imageViewHolder.mImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent =
+                                    new Intent(getContext(), ImagePagerFullscreenActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putStringArrayList(IMAGE_PATHS,
+                                    imageListToArrayListOfPaths(mNoteListEntry.getValue()
+                            ));
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                        }
+                    });
                 }
             }
 
             return convertView;
+        }
+
+        private ArrayList<String> imageListToArrayListOfPaths(List<Image> imageList) {
+            ArrayList<String> pathList = new ArrayList<>();
+            for (Image img : imageList) {
+                pathList.add(img.getPath());
+            }
+            return pathList;
         }
     }
 
