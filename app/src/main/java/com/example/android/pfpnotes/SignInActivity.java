@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.android.pfpnotes.data.Preferences;
@@ -30,6 +31,9 @@ public class SignInActivity extends AppCompatActivity {
     private Preferences mPreferences;
     private Bundle mBundle;
 
+    private Button mSignInButton;
+    private ProgressBar mSigningInProgressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +42,9 @@ public class SignInActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         mBundle = getIntent().getExtras();
+
+        mSigningInProgressBar =
+                (ProgressBar) findViewById(R.id.progress_bar_signing_in);
 
         mConnection = new Connection(this);
         if (!mConnection.isConnected()) {
@@ -51,14 +58,16 @@ public class SignInActivity extends AppCompatActivity {
         final EditText password = findViewById(R.id.password);
         CheckBox stayIn = findViewById(R.id.stay_in);
 
-        Button signIn = findViewById(R.id.btn_sign_in);
-        signIn.setOnClickListener(new View.OnClickListener() {
+        mSignInButton = findViewById(R.id.btn_sign_in);
+        mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = username.getText().toString();
                 String pass = password.getText().toString();
                 validate(email, pass);
                 signIn(email, pass);
+                v.setVisibility(View.GONE);
+                mSigningInProgressBar.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -120,6 +129,9 @@ public class SignInActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, NoteListActivity.class);
                 startActivity(intent);
             }
+        } else {
+            mSignInButton.setVisibility(View.VISIBLE);
+            mSigningInProgressBar.setVisibility(View.GONE);
         }
     }
 }

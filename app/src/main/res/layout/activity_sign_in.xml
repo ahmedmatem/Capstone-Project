@@ -60,12 +60,19 @@
         android:id="@+id/btn_sign_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@null"
+        android:background="@color/colorPrimary"
         android:text="@string/sign_in"
         android:layout_gravity="center"
         android:textAllCaps="false"
-        android:textColor="@color/colorAccent"
+        android:textColor="@android:color/white"
         android:textSize="18sp"
         android:layout_marginTop="20dp"/>
+
+    <ProgressBar
+        android:id="@+id/progress_bar_signing_in"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
 
 </LinearLayout>

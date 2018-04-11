@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.android.pfpnotes.R;
+import com.github.chrisbanes.photoview.PhotoView;
 
 import java.util.ArrayList;
 
@@ -27,8 +28,10 @@ public class ImagePagerFullscreenAdapter extends PagerAdapter {
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
         View layout = layoutInflater.inflate(R.layout.fullscreen_item,
                 container, false);
-        ImageView imageView = layout.findViewById(R.id.fullscreen_image);
-        imageView.setImageURI(Uri.parse(path));
+//        ImageView imageView = layout.findViewById(R.id.fullscreen_image);
+//        imageView.setImageURI(Uri.parse(path));
+        PhotoView photoView = (PhotoView) layout.findViewById(R.id.fullscreen_image);
+        photoView.setImageURI(Uri.parse(path));
         container.addView(layout);
         return layout;
     }
@@ -41,5 +44,10 @@ public class ImagePagerFullscreenAdapter extends PagerAdapter {
     @Override
     public boolean isViewFromObject(View view, Object object) {
         return view == object;
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        container.removeView((View) object);
     }
 }
