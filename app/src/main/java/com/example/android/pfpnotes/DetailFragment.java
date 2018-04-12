@@ -1,11 +1,16 @@
 package com.example.android.pfpnotes;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.SharedElementCallback;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +44,7 @@ import static com.example.android.pfpnotes.ImagePagerFullscreenActivity.IMAGE_PA
  */
 public class DetailFragment extends Fragment {
     public static final String ARG_NOTE_DETAIL = "note_detail";
+    public static final String CURRENT_POSITION = "current_position";
 
     private OnDetailFragmentListener mListener;
 
@@ -95,6 +101,11 @@ public class DetailFragment extends Fragment {
         detailImagesGridView.setAdapter(adapter);
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -160,8 +171,8 @@ public class DetailFragment extends Fragment {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ImageViewHolder imageViewHolder;
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            final ImageViewHolder imageViewHolder;
             if (convertView == null) {
                 convertView = mLayoutInflater.inflate(R.layout.detail_images_grid_item,
                         parent, false);
@@ -180,13 +191,14 @@ public class DetailFragment extends Fragment {
                     imageViewHolder.mImage.setImageBitmap(bitmap);
                     imageViewHolder.mImage.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onClick(final View v) {
                             Intent intent =
                                     new Intent(getContext(), ImagePagerFullscreenActivity.class);
                             Bundle bundle = new Bundle();
                             bundle.putStringArrayList(IMAGE_PATHS,
                                     imageListToArrayListOfPaths(mNoteListEntry.getValue()
                             ));
+                            bundle.putInt(CURRENT_POSITION, position);
                             intent.putExtras(bundle);
                             startActivity(intent);
                         }

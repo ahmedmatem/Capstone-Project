@@ -16,9 +16,20 @@ import java.util.ArrayList;
 public class ImagePagerFullscreenAdapter extends PagerAdapter {
     private Context mContext;
     private ArrayList<String> mPaths;
+    private OnFullscreenListener mListener;
+
+    public interface OnFullscreenListener {
+        void onClick();
+    }
 
     public ImagePagerFullscreenAdapter(Context context, ArrayList<String> paths) {
         mContext = context;
+        try {
+            mListener = (OnFullscreenListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.getClass().getSimpleName() + " must implement " +
+                    "interface OnFullscreenListener");
+        }
         mPaths = paths;
     }
 
@@ -28,10 +39,16 @@ public class ImagePagerFullscreenAdapter extends PagerAdapter {
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
         View layout = layoutInflater.inflate(R.layout.fullscreen_item,
                 container, false);
-//        ImageView imageView = layout.findViewById(R.id.fullscreen_image);
-//        imageView.setImageURI(Uri.parse(path));
         PhotoView photoView = (PhotoView) layout.findViewById(R.id.fullscreen_image);
         photoView.setImageURI(Uri.parse(path));
+        photoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onClick();
+                }
+            }
+        });
         container.addView(layout);
         return layout;
     }

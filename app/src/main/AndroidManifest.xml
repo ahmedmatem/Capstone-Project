@@ -141,7 +141,6 @@
         <activity
             android:name=".ImagePagerFullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_image_pager_fullscreen"
             android:parentActivityName=".DetailActivity"
             android:theme="@style/FullscreenTheme">
             <meta-data

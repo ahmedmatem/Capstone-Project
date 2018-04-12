@@ -1,6 +1,8 @@
 package com.example.android.pfpnotes;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -11,20 +13,27 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
+import android.widget.Toast;
 
 import com.example.android.pfpnotes.data.adapters.ImagePagerFullscreenAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static com.example.android.pfpnotes.DetailFragment.CURRENT_POSITION;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class ImagePagerFullscreenActivity extends AppCompatActivity {
+public class ImagePagerFullscreenActivity extends AppCompatActivity
+        implements ImagePagerFullscreenAdapter.OnFullscreenListener {
     public static final String IMAGE_PATHS = "image_paths";
 
     private ArrayList<String> mImagePaths;
     private ViewPager mViewPager;
+    private ImagePagerFullscreenAdapter mAdapter;
 
     /**
      * Whether or not the system UI should be auto-hidden after
@@ -71,7 +80,7 @@ public class ImagePagerFullscreenActivity extends AppCompatActivity {
             if (actionBar != null) {
                 actionBar.show();
             }
-            mControlsView.setVisibility(View.VISIBLE);
+//            mControlsView.setVisibility(View.VISIBLE);
         }
     };
     private boolean mVisible;
@@ -107,7 +116,7 @@ public class ImagePagerFullscreenActivity extends AppCompatActivity {
         }
 
         mVisible = true;
-//        mControlsView = findViewById(R.id.fullscreen_content_controls);
+//        mControlsView = findViewById(R.id.view_pager_fullscreen_content);
         mContentView = findViewById(R.id.view_pager_fullscreen_content);
 
 
@@ -128,9 +137,12 @@ public class ImagePagerFullscreenActivity extends AppCompatActivity {
         if (bundle != null && bundle.containsKey(IMAGE_PATHS)) {
             mImagePaths = bundle.getStringArrayList(IMAGE_PATHS);
             mViewPager = findViewById(R.id.view_pager_fullscreen_content);
-            ImagePagerFullscreenAdapter adapter =
-                    new ImagePagerFullscreenAdapter(this, mImagePaths);
-            mViewPager.setAdapter(adapter);
+            mAdapter = new ImagePagerFullscreenAdapter(this, mImagePaths);
+            mViewPager.setAdapter(mAdapter);
+            if (bundle.containsKey(CURRENT_POSITION)) {
+                int currentPosition = bundle.getInt(CURRENT_POSITION);
+                mViewPager.setCurrentItem(currentPosition);
+            }
         }
     }
 
@@ -196,5 +208,10 @@ public class ImagePagerFullscreenActivity extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+    @Override
+    public void onClick() {
+        toggle();
     }
 }
