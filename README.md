@@ -1,5 +1,16 @@
 # Capstone-Project
 Udacity Capstone Project
 
-// TODO: make note list of cards (with actions: Upload, Edit, Detail)
-// TODO: add upload action to main menu
+How does it work?
+
+For very first time when application starts, worker must authenticate yourself by username and password given from team manager. The successful authentication will load Price and Place no editable lists which are needed to add notes. They can be viewed from main menu, clicking on Price list and Place list commands.
+
+The main activity contains a list of all notes created by current worker sorted by date and float action bar button that allows adding new note.
+
+Note card contains:
+-	information for dimension, location and price;
+-	action buttons for viewing and editing;
+-	all above information on the top of image background (if such exists)
+
+
+Each note could be viewed and edited. The last action is available before upload command happened. Once it happened note could not be changed by app requirements.
