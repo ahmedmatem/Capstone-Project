@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.example.android.pfpnotes.asynctasks.DetailAsyncTask;
 import com.example.android.pfpnotes.data.DbContract;
+import com.example.android.pfpnotes.data.Preferences;
 import com.example.android.pfpnotes.data.adapters.NoteAdapter;
 import com.example.android.pfpnotes.data.daos.ImageDAO;
 import com.example.android.pfpnotes.data.daos.PlaceDAO;
@@ -111,8 +112,8 @@ public class NoteListFragment extends Fragment
         return new CursorLoader(getContext(),
                 DbContract.NoteEntry.CONTENT_URI,
                 null,
-                null,
-                null,
+                DbContract.NoteEntry.FULL_EMAIL + "=?",
+                new String[]{new Preferences(getContext()).readUserEmail()},
                 DbContract.NoteEntry.COLUMN_DATE + " DESC");
     }
 

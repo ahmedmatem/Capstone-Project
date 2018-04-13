@@ -111,6 +111,8 @@ public class DataProvider extends ContentProvider {
         }
 
         final SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+
         Cursor returnCursor = queryBuilder.query(db,
                 projection,
                 selection,
