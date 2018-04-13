@@ -1,5 +1,6 @@
 package com.example.android.pfpnotes;
 
+import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.android.pfpnotes.asynctasks.DetailAsyncTask;
 import com.example.android.pfpnotes.data.adapters.DetailPagerAdapter;

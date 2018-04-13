@@ -1,6 +1,7 @@
 package com.example.android.pfpnotes.data.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.android.pfpnotes.R;
+import com.example.android.pfpnotes.common.Performance;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.util.ArrayList;
@@ -40,7 +42,8 @@ public class ImagePagerFullscreenAdapter extends PagerAdapter {
         View layout = layoutInflater.inflate(R.layout.fullscreen_item,
                 container, false);
         PhotoView photoView = (PhotoView) layout.findViewById(R.id.fullscreen_image);
-        photoView.setImageURI(Uri.parse(path));
+        Bitmap bmp = Performance.decodeSampledBitmapFromFile(path, 200, 200);
+        photoView.setImageBitmap(bmp);
         photoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

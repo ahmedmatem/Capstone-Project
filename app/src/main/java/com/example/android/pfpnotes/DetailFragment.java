@@ -197,7 +197,7 @@ public class DetailFragment extends Fragment {
                             Bundle bundle = new Bundle();
                             bundle.putStringArrayList(IMAGE_PATHS,
                                     imageListToArrayListOfPaths(mNoteListEntry.getValue()
-                            ));
+                                    ));
                             bundle.putInt(CURRENT_POSITION, position);
                             intent.putExtras(bundle);
                             startActivity(intent);

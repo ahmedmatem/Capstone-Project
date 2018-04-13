@@ -3,6 +3,7 @@ package com.example.android.pfpnotes;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.support.v4.app.SharedElementCallback;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -140,7 +141,7 @@ public class ImagePagerFullscreenActivity extends AppCompatActivity
             mAdapter = new ImagePagerFullscreenAdapter(this, mImagePaths);
             mViewPager.setAdapter(mAdapter);
             if (bundle.containsKey(CURRENT_POSITION)) {
-                int currentPosition = bundle.getInt(CURRENT_POSITION);
+                final int currentPosition = bundle.getInt(CURRENT_POSITION);
                 mViewPager.setCurrentItem(currentPosition);
             }
         }
