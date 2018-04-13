@@ -19,6 +19,7 @@ public class ImagePagerFullscreenAdapter extends PagerAdapter {
     private Context mContext;
     private ArrayList<String> mPaths;
     private OnFullscreenListener mListener;
+    private static Bitmap mBitmap;
 
     public interface OnFullscreenListener {
         void onClick();
@@ -42,8 +43,8 @@ public class ImagePagerFullscreenAdapter extends PagerAdapter {
         View layout = layoutInflater.inflate(R.layout.fullscreen_item,
                 container, false);
         PhotoView photoView = (PhotoView) layout.findViewById(R.id.fullscreen_image);
-        Bitmap bmp = Performance.decodeSampledBitmapFromFile(path, 200, 200);
-        photoView.setImageBitmap(bmp);
+        mBitmap = Performance.decodeSampledBitmapFromFile(path, 200, 200);
+        photoView.setImageBitmap(mBitmap);
         photoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
