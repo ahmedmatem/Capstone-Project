@@ -26,4 +26,4 @@ Detail view show additional information for selected note in <i>ViewPager</i> an
 slide to previous and next note detail information.
 <h4>Upload notes</h4>
 User have to upload all generate notes by <i>Upload</i> action from main menu 
-(to Firebase database and storage).
+(to Firebase database and storage). Only notes that contain image(s) could be uploaded (according by application requirements).
