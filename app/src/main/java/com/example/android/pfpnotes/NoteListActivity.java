@@ -3,6 +3,7 @@ package com.example.android.pfpnotes;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.example.android.pfpnotes.DetailActivity.POSITION_IN_DETAIL;
+import static com.example.android.pfpnotes.NoteListFragment.REQUEST_CODE_DETAIL_VIEW;
 
 public class NoteListActivity extends AppCompatActivity
         implements NoteListFragment.NoteListListener,
@@ -49,11 +51,6 @@ public class NoteListActivity extends AppCompatActivity
         setContentView(R.layout.activity_note_list);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null && bundle.containsKey(POSITION_IN_DETAIL)) {
-            mPositionInDetail = bundle.getInt(POSITION_IN_DETAIL);
-        }
 
         if (savedInstanceState == null) {
             mNoteListFragment = NoteListFragment.newInstance(getSupportLoaderManager(),
@@ -94,7 +91,6 @@ public class NoteListActivity extends AppCompatActivity
         boolean isSignedIn = new Preferences(this).isSignedIn();
         mSignInMenuItem.setVisible(!isSignedIn);
         mSignOutMenuItem.setVisible(isSignedIn);
-
     }
 
     @Override

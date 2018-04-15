@@ -27,6 +27,9 @@ import com.example.android.pfpnotes.models.NoteModel;
 
 import java.util.ArrayList;
 
+import static android.app.Activity.RESULT_OK;
+import static com.example.android.pfpnotes.DetailActivity.POSITION_IN_DETAIL;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +42,7 @@ import java.util.ArrayList;
 public class NoteListFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor>,
         NoteAdapter.NoteClickListener {
+    public static final int REQUEST_CODE_DETAIL_VIEW = 1;
     public static final String POSITION = "position";
     private static final int NOTE_LOADER_ID = 5;
     public static final String NOTE_ID = "note_id";
@@ -123,7 +127,7 @@ public class NoteListFragment extends Fragment
         mAdapter = new NoteAdapter(this, data, getContext(), getLayoutInflater());
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(layoutManager);
-        int positionInMaster = getPositionInMaster(mAdapter.getData());
+        int positionInMaster = getPositionInMaster(mAdapter.getData(), mPositionInDetail--);
         mRecyclerView.scrollToPosition(positionInMaster);
 
         if (getResources().getBoolean(R.bool.twoPane)) {
@@ -133,7 +137,7 @@ public class NoteListFragment extends Fragment
         }
     }
 
-    private int getPositionInMaster(ArrayList<Item> data) {
+    private int getPositionInMaster(ArrayList<Item> data, int positionInDetail) {
         if(data == null) {
             return 0;
         }
@@ -141,7 +145,7 @@ public class NoteListFragment extends Fragment
         for (Item item : data){
             if(item instanceof NoteItem){
                 currentItem = (NoteItem) item;
-                if(currentItem.getPositionInDetail() == (mPositionInDetail - 1)){
+                if(currentItem.getPositionInDetail() == positionInDetail){
                     return currentItem.getPositionInMaster();
                 }
             }
@@ -201,19 +205,23 @@ public class NoteListFragment extends Fragment
         Bundle bundle = new Bundle();
         bundle.putInt(NOTE_ID, item.getId());
         intent.putExtras(bundle);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_DETAIL_VIEW);
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_DETAIL_VIEW) {
+            if (resultCode == RESULT_OK) {
+                Bundle bundle = data.getExtras();
+                if(bundle != null && bundle.containsKey(POSITION_IN_DETAIL)) {
+                    int positionInDetail = bundle.getInt(POSITION_IN_DETAIL);
+                    int positionInMaster = getPositionInMaster(mAdapter.getData(), positionInDetail);
+                    mRecyclerView.scrollToPosition(positionInMaster);
+                }
+            }
+        }
+    }
+
     public interface NoteListListener {
         void onNotesLoadFinished();
     }

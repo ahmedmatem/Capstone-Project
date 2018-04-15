@@ -1,6 +1,5 @@
 package com.example.android.pfpnotes;
 
-import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.example.android.pfpnotes.asynctasks.DetailAsyncTask;
 import com.example.android.pfpnotes.data.adapters.DetailPagerAdapter;
@@ -68,18 +66,15 @@ public class DetailActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
-                backToNoteListActivity(mViewPager.getCurrentItem());
+                Intent intent = new Intent(this, NoteListActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt(POSITION_IN_DETAIL, mViewPager.getCurrentItem());
+                intent.putExtras(bundle);
+                setResult(RESULT_OK, intent);
+                finish();
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void backToNoteListActivity(int currentItem) {
-        Intent intent = new Intent(this, NoteListActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt(POSITION_IN_DETAIL, currentItem);
-        intent.putExtras(bundle);
-        startActivity(intent);
     }
 
     @Override
