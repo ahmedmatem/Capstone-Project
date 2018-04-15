@@ -30,7 +30,6 @@
             android:name=".NoteListActivity"
             android:configChanges="orientation"
             android:label="@string/notes"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>

@@ -2,7 +2,7 @@
     <string name="app_name">PFP Notes</string>
 
     <!--SignIn layout-->
-    <string name="username">Username</string>
+    <string name="email">Username</string>
     <string name="password">Password</string>
     <string name="sign_in_remember">Stay signed in.</string>
     <string name="sign_in">Sign in</string>
@@ -78,4 +78,6 @@
 
     <string name="title_activity_image_pager_fullscreen">ImagePagerFullscreenActivity</string>
     <string name="image_transition_name">note_image</string>
+    <string name="error_Invalid_email">Not a valid email address!</string>
+    <string name="error_invalid_password">Not a valid password!</string>
 </resources>

@@ -105,22 +105,22 @@ public class NoteListActivity extends AppCompatActivity
             case R.id.action_price_list:
                 intent = new Intent(this, PriceListActivity.class);
                 startActivity(intent);
-                break;
+                return true;
             case R.id.action_places:
                 intent = new Intent(this, PlaceListActivity.class);
                 startActivity(intent);
-                break;
+                return true;
             case R.id.action_sign_in:
                 intent = new Intent(this, SignInActivity.class);
                 startActivity(intent);
-                break;
+                return true;
             case R.id.action_sign_out:
                 signOut();
-                break;
+                return true;
             case R.id.action_upload:
                 intent = new Intent(this, UploadActivity.class);
                 startActivity(intent);
-                break;
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
