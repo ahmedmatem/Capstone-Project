@@ -37,7 +37,8 @@ public class PriceListActivity extends AppCompatActivity
                 if(columnIndex == cursor.getColumnIndex(DbContract.PriceEntry.COLUMN_PRICE)){
                     double price = cursor.getDouble(columnIndex);
                     TextView tv_price = (TextView) view;
-                    tv_price.setText(String.format("£%.2f", price));
+                    tv_price.setText(getString(R.string.price_format, getString(R.string.pound),
+                            price));
                     return true;
                 }
                 return false;
